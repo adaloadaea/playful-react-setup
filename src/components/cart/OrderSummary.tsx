@@ -1,11 +1,23 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { ShoppingBag, Truck, CreditCard, Clock } from 'lucide-react';
+import { ShoppingBag, Truck, CreditCard, Clock, Pencil, Trash2 } from 'lucide-react';
 import { useCart } from './CartProvider';
+import PaymentButtons from './PaymentButtons';
+import { CartItem } from './CartProvider';
+
+interface UserDetails {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  address: string;
+  country: string;
+  zipCode: string;
+}
 
 interface OrderSummaryProps {
   userDetails: UserDetails | null;
-  cartItems: any[];
+  cartItems: CartItem[];
   onEditDetails?: () => void;
   onDeleteDetails?: () => void;
 }

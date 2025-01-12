@@ -63,6 +63,17 @@ const GiftApp = () => {
     return () => clearTimeout(timer);
   }, []);
 
+  const handleRemoveItem = (index: number) => {
+    console.log('Removing item at index:', index);
+    setSelectedItems(prevItems => prevItems.filter((_, i) => i !== index));
+    playTickSound();
+    toast({
+      title: "Article retiré",
+      description: "L'article a été retiré de votre pack",
+      variant: "default",
+    });
+  };
+
   const validateSelection = () => {
     if (selectedItems.length !== containerCount) {
       toast({
