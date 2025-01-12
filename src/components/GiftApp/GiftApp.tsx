@@ -17,22 +17,6 @@ export interface GiftPack {
   note?: string;
 }
 
-const getPackBoxPrice = (packType: string): number => {
-  switch (packType) {
-    case 'Pack Prestige':
-      return 50;
-    case 'Pack Premium':
-      return 30;
-    case 'Pack Trio':
-    case 'Pack Duo':
-      return 20;
-    case 'Pack Mini Duo':
-      return 0;
-    default:
-      return 0;
-  }
-};
-
 const GiftApp = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [selectedItems, setSelectedItems] = useState<Product[]>([]);
@@ -62,17 +46,6 @@ const GiftApp = () => {
     const timer = setTimeout(() => setIsLoading(false), 2000);
     return () => clearTimeout(timer);
   }, []);
-
-  const handleRemoveItem = (index: number) => {
-    console.log('Removing item at index:', index);
-    setSelectedItems(prevItems => prevItems.filter((_, i) => i !== index));
-    playTickSound();
-    toast({
-      title: "Article retiré",
-      description: "L'article a été retiré de votre pack",
-      variant: "default",
-    });
-  };
 
   const validateSelection = () => {
     if (selectedItems.length !== containerCount) {
@@ -204,13 +177,17 @@ const GiftApp = () => {
     });
   };
 
+  const handleRemoveItem = (index: number) => {
+    setSelectedItems((prev) => prev.filter((_, i) => i !== index));
+    playTickSound();
+  };
+
   const handleConfirmPack = async () => {
     if (!validateSelection()) {
       return;
     }
 
     setIsLoading(true);
-    const boxPrice = getPackBoxPrice(packType);
     
     for (const item of selectedItems) {
       await new Promise(resolve => setTimeout(resolve, 500));
@@ -218,15 +195,12 @@ const GiftApp = () => {
         ...item,
         quantity: 1,
         personalization: item.personalization || packNote,
-        fromPack: true,
-        packType: packType,
-        boxPrice: boxPrice
       });
     }
 
     toast({
       title: "Pack Ajouté au Panier! 🎉",
-      description: `${packType} ajouté avec ${boxPrice === 0 ? 'boîte gratuite' : `boîte (${boxPrice} TND)`}`,
+      description: "Vous allez être redirigé vers votre panier",
       style: {
         backgroundColor: '#700100',
         color: 'white',

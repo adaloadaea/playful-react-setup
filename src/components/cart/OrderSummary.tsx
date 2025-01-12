@@ -1,23 +1,24 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { ShoppingBag, Truck, CreditCard, Clock, Pencil, Trash2 } from 'lucide-react';
-import { useCart } from './CartProvider';
+import { UserDetails } from '@/utils/userDetailsStorage';
 import PaymentButtons from './PaymentButtons';
-import { CartItem } from './CartProvider';
+import { Pencil, Trash2, Tag } from 'lucide-react';
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { toast } from "@/components/ui/use-toast";
+import { Link } from 'react-router-dom';
+import { useCart } from './CartProvider';
 
-interface UserDetails {
-  firstName: string;
-  lastName: string;
-  email: string;
-  phone: string;
-  address: string;
-  country: string;
-  zipCode: string;
-}
+const promoCodes = {
+  'WELCOME10': { discount: 10, description: 'Code de bienvenue' },
+  'SUMMER20': { discount: 20, description: 'Offre d\'été' },
+  'SPECIAL30': { discount: 30, description: 'Offre spéciale' },
+  'LUNCH2024': { discount: 25, description: 'Offre du déjeuner' }
+};
 
 interface OrderSummaryProps {
   userDetails: UserDetails | null;
-  cartItems: CartItem[];
+  cartItems: any[];
   onEditDetails?: () => void;
   onDeleteDetails?: () => void;
 }
@@ -30,31 +31,35 @@ const OrderSummary = ({
 }: OrderSummaryProps) => {
   const [discountCode, setDiscountCode] = useState('');
   const { calculateTotal, hasNewsletterDiscount } = useCart();
-  const { 
-    subtotal, 
-    discount: newsletterDiscount, 
-    total, 
-    boxTotal,
-    packBoxTotal,
-    individualBoxTotal 
-  } = calculateTotal();
+  const { subtotal, discount: newsletterDiscount, total, boxTotal } = calculateTotal();
   
   const shipping = subtotal > 299 ? 0 : 8;
   const finalTotal = total + shipping;
 
-  // Group pack items to show box prices
-  const packGroups = cartItems.reduce((groups, item) => {
-    if (item.fromPack && item.packType) {
-      if (!groups[item.packType]) {
-        groups[item.packType] = {
-          items: [],
-          boxPrice: item.boxPrice || 0
-        };
-      }
-      groups[item.packType].items.push(item);
+  // Check if any item has personalization
+  const hasPersonalization = cartItems.some(item => item.personalization);
+
+  const handleApplyDiscount = () => {
+    const promoCode = promoCodes[discountCode];
+    
+    if (promoCode) {
+      toast({
+        title: "Code promo appliqué",
+        description: `Réduction de ${promoCode.discount}% appliquée`,
+        style: {
+          backgroundColor: '#700100',
+          color: 'white',
+          border: '1px solid #590000',
+        },
+      });
+    } else {
+      toast({
+        title: "Code invalide",
+        description: "Le code promo n'est pas valide",
+        variant: "destructive",
+      });
     }
-    return groups;
-  }, {} as Record<string, { items: CartItem[], boxPrice: number }>);
+  };
 
   return (
     <motion.div 
@@ -63,6 +68,8 @@ const OrderSummary = ({
       className="lg:col-span-1"
     >
       <div className="bg-white rounded-lg shadow-sm p-6 sticky top-32 border border-gray-100">
+        <h2 className="text-xl font-serif text-[#1A1F2C] mb-6">Résumé de la commande</h2>
+        
         {userDetails && (
           <div className="mb-6 p-4 bg-[#F1F0FB] rounded-md relative group">
             <div className="absolute right-2 top-2 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -98,36 +105,47 @@ const OrderSummary = ({
 
         <div className="space-y-4 mb-6">
           <div className="flex justify-between text-[#8E9196]">
-            <span>Sous-total articles</span>
+            <span>Sous-total</span>
             <span>{subtotal.toFixed(2)} TND</span>
           </div>
           
-          {Object.entries(packGroups).map(([packType, { boxPrice }]) => (
-            <div key={packType} className="flex justify-between text-[#8E9196]">
-              <span>Boîte {packType}</span>
-              <span className="flex items-center">
-                {boxPrice === 0 ? (
-                  <span className="text-green-600">Gratuite</span>
-                ) : (
-                  `${boxPrice.toFixed(2)} TND`
-                )}
-              </span>
-            </div>
-          ))}
-          
-          {individualBoxTotal > 0 && (
+          {boxTotal > 0 && (
             <div className="flex justify-between text-[#8E9196]">
-              <span>Boîtes individuelles</span>
-              <span>{individualBoxTotal.toFixed(2)} TND</span>
+              <span>Box cadeau</span>
+              <span>{boxTotal.toFixed(2)} TND</span>
             </div>
           )}
           
+          {hasNewsletterDiscount && newsletterDiscount > 0 && (
+            <div className="flex justify-between text-green-600">
+              <span>Réduction newsletter (-5%)</span>
+              <span>-{newsletterDiscount.toFixed(2)} TND</span>
+            </div>
+          )}
+
           <div className="flex justify-between text-[#8E9196]">
             <span>Livraison</span>
             <span>{shipping === 0 ? 'Gratuite' : `${shipping.toFixed(2)} TND`}</span>
           </div>
           
           <div className="space-y-2 pt-2 border-t border-gray-100">
+            <div className="flex gap-2">
+              <Input
+                placeholder="Code promo"
+                value={discountCode}
+                onChange={(e) => setDiscountCode(e.target.value.toUpperCase())}
+                className="bg-white border-gray-300 focus:border-[#700100] focus:ring-[#700100]"
+              />
+              <Button
+                onClick={handleApplyDiscount}
+                className="bg-[#700100] text-white hover:bg-[#591C1C] transition-colors"
+              >
+                Appliquer
+              </Button>
+            </div>
+          </div>
+
+          <div className="border-t border-gray-100 pt-4">
             <div className="flex justify-between text-lg font-medium text-[#1A1F2C]">
               <span>Total</span>
               <span>{finalTotal.toFixed(2)} TND</span>
@@ -143,7 +161,7 @@ const OrderSummary = ({
           total={subtotal}
           shipping={shipping}
           finalTotal={finalTotal}
-          hasPersonalization={cartItems.some(item => item.personalization)}
+          hasPersonalization={hasPersonalization}
         />
 
         <div className="mt-6 space-y-2 text-sm text-[#8E9196]">

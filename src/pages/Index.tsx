@@ -2,7 +2,6 @@ import React, { useState, useEffect, Suspense, useTransition } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Skeleton } from "@/components/ui/skeleton";
 import MainNavbarIndex from '@/components/MainNavbarIndex';
-import { Product } from '@/types/product';
 
 const TopNavbar = React.lazy(() => import('../components/TopNavbar'));
 const BrandNavbar = React.lazy(() => import('../components/BrandNavbar'));
@@ -28,18 +27,15 @@ const LoadingFallback = () => (
 
 const Index = () => {
   const [isLoading, setIsLoading] = useState(() => {
+    // Check if this is the first visit
     const hasVisited = sessionStorage.getItem('hasVisitedIndex');
     return !hasVisited;
   });
   const [isInView, setIsInView] = useState(false);
   const [isPending, startTransition] = useTransition();
 
-  // Mock function for handling product drag
-  const handleProductDragStart = (event: React.DragEvent<HTMLDivElement>, product: Product) => {
-    event.dataTransfer.setData('product', JSON.stringify(product));
-  };
-
   useEffect(() => {
+    // Mark that user has visited the index page
     sessionStorage.setItem('hasVisitedIndex', 'true');
     
     const handleScroll = () => {
@@ -90,7 +86,7 @@ const Index = () => {
                 transition={{ duration: 1.8 }}
               >
                 <Suspense fallback={<LoadingFallback />}>
-                  <Products products={[]} onDragStart={handleProductDragStart} />
+                  <Products />
                 </Suspense>
               </motion.div>
 
