@@ -21,13 +21,13 @@ const ProductImageCarousel = ({ images, name }: ProductImageCarouselProps) => {
   return (
     <div className="flex gap-4 h-[600px]">
       {/* Thumbnails column */}
-      <div className="flex flex-col gap-3 w-24">
+      <div className="flex flex-col gap-2 w-24 h-full justify-between">
         {filteredImages.map((image, index) => (
           <motion.button
             key={index}
             onClick={() => setSelectedImage(index)}
             className={`
-              relative w-24 h-24 rounded-lg overflow-hidden border-2 
+              relative w-24 h-[142px] rounded-lg overflow-hidden border-2 
               ${selectedImage === index ? 'border-[#700100]' : 'border-gray-200'}
               hover:border-[#700100]/50 transition-all duration-300
             `}
