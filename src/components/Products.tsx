@@ -8,8 +8,8 @@ interface ProductGridProps {
   onDragStart: (event: React.DragEvent<HTMLDivElement>, product: Product) => void;
 }
 
-const ProductGrid = ({ products = [], onDragStart }: ProductGridProps) => {
-  if (!products || products.length === 0) {
+const ProductGrid = ({ products, onDragStart }: ProductGridProps) => {
+  if (products.length === 0) {
     return (
       <div className="flex items-center justify-center h-full">
         <p className="text-gray-500 text-center italic">
@@ -20,9 +20,7 @@ const ProductGrid = ({ products = [], onDragStart }: ProductGridProps) => {
   }
 
   const handleDragStart = (event: React.DragEvent<HTMLDivElement>, product: Product) => {
-    if (onDragStart) {
-      onDragStart(event, product);
-    }
+    onDragStart(event, product);
   };
 
   return (
