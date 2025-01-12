@@ -12,6 +12,8 @@ export interface CartItem {
   color?: string;
   personalization?: string;
   fromPack?: boolean;
+  packType?: string;
+  boxPrice?: number;
   withBox?: boolean;
 }
 
@@ -24,7 +26,7 @@ interface CartContextType {
   hasNewsletterDiscount: boolean;
   applyNewsletterDiscount: () => void;
   removeNewsletterDiscount: () => void;
-  calculateTotal: () => { subtotal: number; discount: number; total: number; boxTotal: number };
+  calculateTotal: () => { subtotal: number; discount: number; total: number; boxTotal: number; packBoxTotal: number; individualBoxTotal: number };
 }
 
 const BOX_PRICE = 30;
@@ -116,12 +118,38 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
 
   const calculateTotal = () => {
     const itemsSubtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-    const boxTotal = cartItems.reduce((sum, item) => sum + (item.withBox ? BOX_PRICE * item.quantity : 0), 0);
+    
+    // Calculate box costs from packs
+    const packBoxTotal = cartItems.reduce((sum, item) => {
+      if (item.fromPack && item.boxPrice) {
+        // Only add box price once per pack (for the first item)
+        const isFirstPackItem = cartItems.findIndex(
+          i => i.fromPack && i.packType === item.packType
+        ) === cartItems.indexOf(item);
+        return sum + (isFirstPackItem ? item.boxPrice : 0);
+      }
+      return sum;
+    }, 0);
+    
+    // Calculate regular box costs (for individual items)
+    const individualBoxTotal = cartItems.reduce(
+      (sum, item) => sum + (item.withBox && !item.fromPack ? BOX_PRICE * item.quantity : 0), 
+      0
+    );
+    
+    const boxTotal = packBoxTotal + individualBoxTotal;
     const subtotal = itemsSubtotal + boxTotal;
     const discount = hasNewsletterDiscount ? subtotal * 0.05 : 0;
     const total = subtotal - discount;
     
-    return { subtotal: itemsSubtotal, discount, total, boxTotal };
+    return { 
+      subtotal: itemsSubtotal, 
+      discount, 
+      total, 
+      boxTotal,
+      packBoxTotal,
+      individualBoxTotal 
+    };
   };
 
   return (
