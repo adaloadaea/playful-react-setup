@@ -26,7 +26,6 @@ const GiftApp = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Determine pack type from URL
   const packType = React.useMemo(() => {
     const path = location.pathname;
     if (path.includes('packprestige')) return 'Pack Prestige';
@@ -38,7 +37,6 @@ const GiftApp = () => {
     return 'Pack Trio'; // Default
   }, [location]);
 
-  // Get number of containers based on pack type
   const containerCount = React.useMemo(() => {
     if (packType === 'Pack Chemise') return 1;
     return ['Pack Duo', 'Pack Mini Duo'].includes(packType) ? 2 : 3;
@@ -59,7 +57,6 @@ const GiftApp = () => {
       return false;
     }
 
-    // Validate specific pack requirements
     switch (packType) {
       case 'Pack Chemise': {
         const chemises = selectedItems.filter(item => item.itemgroup_product === 'chemises');
@@ -206,16 +203,23 @@ const GiftApp = () => {
         image: "/Menu/Sur musure .png",
         type_product: "Pack",
         itemgroup_product: "Pack",
+        size: "-",
+        color: "-",
+        personalization: "-",
+        pack: "aucun",
       });
     }
     
-    // Then add all selected items
+    // Then add all selected items with pack information
     for (const item of selectedItems) {
       await new Promise(resolve => setTimeout(resolve, 500));
       addToCart({
         ...item,
         quantity: 1,
-        personalization: item.personalization || packNote,
+        personalization: item.personalization || '-',
+        pack: packType, // Set the pack type for each item
+        size: item.size || '-', // Ensure size is included
+        color: item.color || '-' // Ensure color is included
       });
     }
 
@@ -235,7 +239,7 @@ const GiftApp = () => {
     navigate('/cart');
   };
 
-  const handleItemDrop = (item: Product) => {
+  const handleItemDrop = (item: Product, size: string, personalization: string) => {
     if (selectedItems.length >= containerCount) {
       toast({
         title: "Pack complet",
@@ -245,7 +249,15 @@ const GiftApp = () => {
       return;
     }
 
-    setSelectedItems((prev) => [...prev, item]);
+    const itemWithDetails = {
+      ...item,
+      size: size,
+      personalization: personalization || '-',
+      fromPack: true, // Mark item as coming from a pack
+      pack: packType // Store the pack type with the item
+    };
+
+    setSelectedItems((prev) => [...prev, itemWithDetails]);
     playTickSound();
     toast({
       title: "Article Ajouté! 🎁",
@@ -256,11 +268,6 @@ const GiftApp = () => {
         border: '1px solid #590000',
       },
     });
-  };
-
-  const handleRemoveItem = (index: number) => {
-    setSelectedItems((prev) => prev.filter((_, i) => i !== index));
-    playTickSound();
   };
 
   return (
@@ -307,7 +314,6 @@ const GiftApp = () => {
             <GiftBasket3D 
               items={selectedItems}
               onItemDrop={handleItemDrop}
-              onRemoveItem={handleRemoveItem}
               containerCount={containerCount}
               onContainerSelect={setSelectedContainerIndex}
             />

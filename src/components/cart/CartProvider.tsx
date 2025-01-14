@@ -14,6 +14,7 @@ export interface CartItem {
   color?: string;
   personalization?: string;
   fromPack?: boolean;
+  pack?: string;
   withBox?: boolean;
   discount_product?: string;
   type_product?: string;
@@ -76,7 +77,8 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
         i.size === item.size && 
         i.color === item.color && 
         i.personalization === item.personalization &&
-        i.withBox === item.withBox
+        i.withBox === item.withBox &&
+        i.pack === item.pack // Add pack to comparison
       );
       
       if (existingItem) {
@@ -85,7 +87,8 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
           i.size === item.size && 
           i.color === item.color && 
           i.personalization === item.personalization &&
-          i.withBox === item.withBox
+          i.withBox === item.withBox &&
+          i.pack === item.pack
             ? { ...i, quantity: i.quantity + item.quantity }
             : i
         );
@@ -97,11 +100,17 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
         ? calculateDiscountedPrice(originalPrice, item.discount_product)
         : originalPrice;
 
-      return [...prevItems, { 
-        ...item, 
+      // Ensure pack information is included
+      const itemWithPack = {
+        ...item,
         price: finalPrice,
-        originalPrice: item.discount_product ? originalPrice : undefined
-      }];
+        originalPrice: item.discount_product ? originalPrice : undefined,
+        pack: item.pack || 'aucun', // Default to 'aucun' if no pack specified
+        size: item.size || '-', // Default to '-' if no size specified
+        personalization: item.personalization || '-' // Default to '-' if no personalization
+      };
+
+      return [...prevItems, itemWithPack];
     });
   };
 
