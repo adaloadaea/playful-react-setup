@@ -23,6 +23,24 @@ const GiftUniversePage = () => {
     const routePath = location.pathname;
     const lastSegment = routePath.substring(routePath.lastIndexOf('/') + 1);
 
+    // Map route segments to pack types
+    const packTypeMap = {
+      packprestige: 'Pack Prestige',
+      packpremium: 'Pack Premium',
+      packpremuim: 'Pack Premium', // Handle typo in route
+      packtrio: 'Pack Trio',
+      packduo: 'Pack Duo',
+      packminiduo: 'Pack Mini Duo',
+      packchemise: 'Pack Chemise',
+    };
+
+    // Set the pack type in sessionStorage
+    const packType = packTypeMap[lastSegment];
+    if (packType) {
+      console.log('Setting pack type:', packType);
+      sessionStorage.setItem('selectedPackType', packType);
+    }
+
     const componentMap = {
       packprestige: <WelcomePackPrestige onCompose={() => setShowGiftBox(true)} />,
       packpremium: <WelcomePackPremium onCompose={() => setShowGiftBox(true)} />,
