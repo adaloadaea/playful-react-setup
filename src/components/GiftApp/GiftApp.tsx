@@ -49,6 +49,8 @@ const GiftApp = () => {
   }, []);
 
   const handleConfirmPack = async () => {
+    console.log('Confirming pack with items:', selectedItems);
+    
     if (!validatePackSelection(selectedItems, containerCount, packType)) {
       return;
     }
@@ -73,15 +75,22 @@ const GiftApp = () => {
     }
     
     for (const item of selectedItems) {
+      console.log('Adding item to cart:', item);
       await new Promise(resolve => setTimeout(resolve, 500));
-      addToCart({
+      
+      // Ensure we have all the required properties
+      const itemToAdd = {
         ...item,
         quantity: 1,
         personalization: item.personalization || '-',
         pack: packType,
         size: item.size || '-',
-        color: item.color || '-'
-      });
+        color: item.color || '-',
+        fromPack: true
+      };
+
+      console.log('Final item being added to cart:', itemToAdd);
+      addToCart(itemToAdd);
     }
 
     toast({
@@ -101,6 +110,8 @@ const GiftApp = () => {
   };
 
   const handleItemDrop = (item: Product) => {
+    console.log('Item dropped:', item);
+    
     if (selectedItems.length >= containerCount) {
       toast({
         title: "Pack complet",
@@ -110,14 +121,19 @@ const GiftApp = () => {
       return;
     }
 
+    // Ensure we preserve all item details including size
     const itemWithDetails = {
       ...item,
       fromPack: true,
-      pack: packType
+      pack: packType,
+      size: item.size || '-', // Preserve the size if it exists
+      personalization: item.personalization || '-'
     };
 
+    console.log('Adding item to selected items with details:', itemWithDetails);
     setSelectedItems((prev) => [...prev, itemWithDetails]);
     playTickSound();
+    
     toast({
       title: "Article Ajouté! 🎁",
       description: "N'oubliez pas que vous pouvez ajouter un message personnalisé à votre pack!",
