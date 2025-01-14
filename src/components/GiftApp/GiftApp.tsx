@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useCart } from "../cart/CartProvider";
 import { toast } from "@/hooks/use-toast";
 import { playTickSound } from "@/utils/audio";
@@ -25,18 +25,7 @@ const GiftApp = () => {
   const [selectedContainerIndex, setSelectedContainerIndex] = useState(0);
   const { addToCart } = useCart();
   const navigate = useNavigate();
-  const location = useLocation();
-
-  const packType = React.useMemo(() => {
-    const path = location.pathname;
-    if (path.includes('packprestige')) return 'Pack Prestige';
-    if (path.includes('packpremium')) return 'Pack Premium';
-    if (path.includes('packtrio')) return 'Pack Trio';
-    if (path.includes('packduo')) return 'Pack Duo';
-    if (path.includes('packminiduo')) return 'Pack Mini Duo';
-    if (path.includes('packchemise')) return 'Pack Chemise';
-    return 'Pack Trio';
-  }, [location]);
+  const packType = sessionStorage.getItem('selectedPackType') || 'Pack Trio';
 
   const containerCount = React.useMemo(() => {
     if (packType === 'Pack Chemise') return 1;
@@ -78,7 +67,6 @@ const GiftApp = () => {
       console.log('Adding item to cart:', item);
       await new Promise(resolve => setTimeout(resolve, 500));
       
-      // Ensure we have all the required properties
       const itemToAdd = {
         ...item,
         quantity: 1,
@@ -109,8 +97,8 @@ const GiftApp = () => {
     navigate('/cart');
   };
 
-  const handleItemDrop = (item: Product) => {
-    console.log('Item dropped:', item);
+  const handleItemDrop = (item: Product, size: string, personalization: string) => {
+    console.log('Item dropped with size:', size, 'and personalization:', personalization);
     
     if (selectedItems.length >= containerCount) {
       toast({
@@ -121,13 +109,12 @@ const GiftApp = () => {
       return;
     }
 
-    // Ensure we preserve all item details including size
     const itemWithDetails = {
       ...item,
       fromPack: true,
       pack: packType,
-      size: item.size || '-', // Preserve the size if it exists
-      personalization: item.personalization || '-'
+      size: size,
+      personalization: personalization || '-'
     };
 
     console.log('Adding item to selected items with details:', itemWithDetails);
