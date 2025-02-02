@@ -27,16 +27,11 @@ const CustomMarker = ({ food }) => {
         }}
         onPress={handleMarkerPress}
       >
-        <View style={styles.markerContainer}>
-          <View style={styles.markerOuter}>
-            <Icon name="fast-food" size={20} color="#893571" />
-          </View>
-          <View style={styles.markerTriangle} />
-        </View>
+        <Icon name="fast-food" size={24} color="#893571" />
       </Marker>
 
       <Modal
-        animationType="fade"
+        animationType="slide"
         transparent={true}
         visible={modalVisible}
         onRequestClose={() => setModalVisible(false)}
@@ -56,9 +51,9 @@ const CustomMarker = ({ food }) => {
             </TouchableOpacity>
 
             <ScrollView bounces={false} showsVerticalScrollIndicator={false}>
-              {food.images?.length > 0 && (
+              {food.first_image && (
                 <Image
-                  source={{ uri: `http://192.168.1.53:5002/api/${food.images[0]}` }}
+                  source={{ uri: `http://192.168.1.53:5002/api/${food.first_image}` }}
                   style={styles.foodImage}
                   resizeMode="cover"
                 />
@@ -69,20 +64,6 @@ const CustomMarker = ({ food }) => {
                 <Text style={styles.description} numberOfLines={3}>
                   {food.description_food}
                 </Text>
-
-                <View style={styles.detailsRow}>
-                  <Icon name="location-outline" size={20} color="#893571" />
-                  <Text style={styles.detailText}>
-                    {food.availability?.adresse_availability || 'No address available'}
-                  </Text>
-                </View>
-
-                <View style={styles.detailsRow}>
-                  <Icon name="time-outline" size={20} color="#893571" />
-                  <Text style={styles.detailText}>
-                    {food.availability?.time_availability || 'No time available'}
-                  </Text>
-                </View>
 
                 <TouchableOpacity 
                   style={styles.detailsButton} 
@@ -101,36 +82,6 @@ const CustomMarker = ({ food }) => {
 };
 
 const styles = StyleSheet.create({
-  markerContainer: {
-    alignItems: 'center',
-  },
-  markerOuter: {
-    backgroundColor: '#fff',
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-  },
-  markerTriangle: {
-    width: 0,
-    height: 0,
-    backgroundColor: 'transparent',
-    borderStyle: 'solid',
-    borderLeftWidth: 8,
-    borderRightWidth: 8,
-    borderBottomWidth: 0,
-    borderTopWidth: 12,
-    borderLeftColor: 'transparent',
-    borderRightColor: 'transparent',
-    borderTopColor: '#fff',
-    transform: [{ translateY: -5 }],
-  },
   modalOverlay: {
     flex: 1,
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
@@ -141,7 +92,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 25,
     borderTopRightRadius: 25,
     maxHeight: '80%',
-    minHeight: '50%',
+    minHeight: '40%',
     overflow: 'hidden',
     ...Platform.select({
       ios: {
@@ -175,26 +126,14 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#893571',
     marginBottom: 10,
+    fontFamily: Platform.select({ ios: 'System', android: 'normal' }),
   },
   description: {
     fontSize: 16,
     color: '#666',
     marginBottom: 20,
     lineHeight: 22,
-  },
-  detailsRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 15,
-    backgroundColor: '#f8f8f8',
-    padding: 12,
-    borderRadius: 10,
-  },
-  detailText: {
-    marginLeft: 10,
-    fontSize: 15,
-    color: '#444',
-    flex: 1,
+    fontFamily: Platform.select({ ios: 'System', android: 'normal' }),
   },
   detailsButton: {
     backgroundColor: '#893571',
@@ -207,6 +146,7 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 16,
     fontWeight: 'bold',
+    fontFamily: Platform.select({ ios: 'System', android: 'normal' }),
   },
 });
 
