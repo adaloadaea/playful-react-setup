@@ -8,10 +8,8 @@ const CustomMarker = ({ food }) => {
   const [modalVisible, setModalVisible] = useState(false);
 
   const handleMarkerPress = () => {
-    if (!modalVisible) {
-      console.log('Marker pressed for food:', food.name_food);
-      setModalVisible(true);
-    }
+    console.log('Marker pressed for food:', food.name_food);
+    setModalVisible(true);
   };
 
   return (
@@ -31,12 +29,13 @@ const CustomMarker = ({ food }) => {
         </View>
       </Marker>
 
-      <FoodMarkerModal
-        key={food.id_food} // Forces a fresh render
-        isVisible={modalVisible}
-        onClose={() => setModalVisible(false)}
-        foodData={food}
-      />
+      {modalVisible && (
+        <FoodMarkerModal
+          isVisible={modalVisible}
+          onClose={() => setModalVisible(false)}
+          foodData={food}
+        />
+      )}
     </>
   );
 };
@@ -46,8 +45,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   markerOuter: {
-    width: 20,
-    height: 20,
+    backgroundColor: '#fff',
+    width: 40,
+    height: 40,
     borderRadius: 20,
     justifyContent: 'center',
     alignItems: 'center',
