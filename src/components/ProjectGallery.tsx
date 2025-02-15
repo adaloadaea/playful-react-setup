@@ -1,9 +1,9 @@
 
 import { useState } from "react";
-import { Card, CardContent } from "./ui/card";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from "./ui/dialog";
+import { Card, CardContent } from "@/components/ui/card";
+import { Dialog, DialogContent, DialogClose } from "@/components/ui/dialog";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
-import { Button } from "./ui/button";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 const galleryImages = [
@@ -85,7 +85,9 @@ const ProjectGallery = () => {
           {galleryImages.map((image, index) => (
             <Card 
               key={image.id}
-              className="group overflow-hidden hover:shadow-lg transition-all duration-300 cursor-pointer"
+              className={cn(
+                "group overflow-hidden hover:shadow-lg transition-all duration-300 cursor-pointer"
+              )}
               onClick={() => setSelectedImage(index)}
             >
               <CardContent className="p-0 relative">
