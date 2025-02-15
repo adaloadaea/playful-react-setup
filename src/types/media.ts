@@ -1,8 +1,9 @@
 
 export interface MediaItem {
-  type: 'video' | 'image';
+  id: number;
+  type: 'image' | 'video';
   url: string;
-  title: string;
   thumbnail: string;
-  category: string;
+  title: string;
+  description: string;
 }
