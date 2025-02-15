@@ -1,15 +1,17 @@
 
 import * as React from "react"
 import { Slot } from "@radix-ui/react-slot"
-import { cn } from "@/lib/utils"
+import { cn } from "../lib/utils"
 
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  asChild?: boolean
+  asChild?: boolean;
+  variant?: 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link';
+  size?: 'default' | 'sm' | 'lg' | 'icon';
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, asChild = false, ...props }, ref) => {
+  ({ className, asChild = false, variant = "default", size = "default", ...props }, ref) => {
     const Comp = asChild ? Slot : "button"
     return (
       <Comp

@@ -22,7 +22,7 @@ const galleryItems: MediaItem[] = [
     type: 'video',
     url: "https://player.vimeo.com/external/403619009.sd.mp4?s=51fb1fe1c5a2088f1d811e944e6e1231c1f2b21f&profile_id=164&oauth2_token_id=57447761",
     thumbnail: "/Vitaprod/ON THE WAY 🔥 👀 __comingsoon _fbk _vilartprod(JPG)_2.jpg",
-    title: "Studio Session Video",
+    title: "Studio Session",
     description: "Behind the scenes with FBK"
   },
   {
@@ -33,7 +33,62 @@ const galleryItems: MediaItem[] = [
     title: "Production Setup",
     description: "Professional recording equipment"
   },
-  // ... Add all other Vitaprod images here with similar structure
+  {
+    id: 4,
+    type: 'image',
+    url: "/Vitaprod/ON THE WAY 🔥 👀 __comingsoon _fbk _vilartprod(JPG)_5.jpg",
+    thumbnail: "/Vitaprod/ON THE WAY 🔥 👀 __comingsoon _fbk _vilartprod(JPG)_5.jpg",
+    title: "Studio Session",
+    description: "Professional recording session"
+  },
+  {
+    id: 5,
+    type: 'image',
+    url: "/Vitaprod/Some snaps from the next project featuring _f.b.k_official ✨️ _Enjoyable shoot _ loved the outcome ⚡️_Cinematography _ Edit _ _og__visuals 👽🁟1.webp",
+    thumbnail: "/Vitaprod/Some snaps from the next project featuring _f.b.k_official ✨️ _Enjoyable shoot _ loved the outcome ⚡️_Cinematography _ Edit _ _og__visuals 👽🁟1.webp",
+    title: "FBK Official Project",
+    description: "Behind the scenes photography"
+  },
+  {
+    id: 6,
+    type: 'image',
+    url: "/Vitaprod/Some snaps from the next project featuring _f.b.k_official ✨️ _Enjoyable shoot _ loved the outcome ⚡️_Cinematography _ Edit _ _og__visuals 👽🁟2.webp",
+    thumbnail: "/Vitaprod/Some snaps from the next project featuring _f.b.k_official ✨️ _Enjoyable shoot _ loved the outcome ⚡️_Cinematography _ Edit _ _og__visuals 👽🁟2.webp",
+    title: "Visual Production",
+    description: "Creative direction and cinematography"
+  },
+  {
+    id: 7,
+    type: 'image',
+    url: "/Vitaprod/Some snaps from the next project featuring _f.b.k_official ✨️ _Enjoyable shoot _ loved the outcome ⚡️_Cinematography _ Edit _ _og__visuals 👽🁟3.webp",
+    thumbnail: "/Vitaprod/Some snaps from the next project featuring _f.b.k_official ✨️ _Enjoyable shoot _ loved the outcome ⚡️_Cinematography _ Edit _ _og__visuals 👽🁟3.webp",
+    title: "Studio Magic",
+    description: "Professional photography session"
+  },
+  {
+    id: 8,
+    type: 'image',
+    url: "/Vitaprod/حين تنبض الشوارع بإيقاعات الحياة و الموسيقى 🎶_نستناوكم نهار 20 جانفي ضمن فعاليات أيام(.jpg",
+    thumbnail: "/Vitaprod/حين تنبض الشوارع بإيقاعات الحياة و الموسيقى 🎶_نستناوكم نهار 20 جانفي ضمن فعاليات أيام(.jpg",
+    title: "Street Rhythms",
+    description: "Live music event - January 20th"
+  },
+  {
+    id: 9,
+    type: 'image',
+    url: "/Vitaprod/شارع الحبيب بورقيبة 🥹 شكرا على اللحظات التي لا تنسى ❤️❤️_مالها إلا البداية .. ولنا _1.jpg",
+    thumbnail: "/Vitaprod/شارع الحبيب بورقيبة 🥹 شكرا على اللحظات التي لا تنسى ❤️❤️_مالها إلا البداية .. ولنا _1.jpg",
+    title: "Habib Bourguiba Avenue",
+    description: "Unforgettable moments"
+  },
+  {
+    id: 10,
+    type: 'image',
+    url: "/Vitaprod/شارع الحبيب بورقيبة 🥹 شكرا على اللحظات التي لا تنسى ❤️❤️_مالها إلا البداية .. ولنا _2.jpg",
+    thumbnail: "/Vitaprod/شارع الحبيب بورقيبة 🥹 شكرا على اللحظات التي لا تنسى ❤️❤️_مالها إلا البداية .. ولنا _2.jpg",
+    title: "Street Performance",
+    description: "Live music in the heart of the city"
+  }
 ];
 
 const ProjectGallery = () => {
