@@ -42,7 +42,7 @@ const Contact = () => {
             <motion.h1
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="text-4xl md:text-6xl font-bold mb-4 text-[#E5DEFF]"
+              className="text-4xl md:text-6xl font-bold mb-4 text-[#D4AF37]"
             >
               Contactez-nous
             </motion.h1>
@@ -50,7 +50,7 @@ const Contact = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="text-xl text-[#D3E4FD] max-w-2xl mx-auto"
+              className="text-xl text-[#F5F5F5] max-w-2xl mx-auto"
             >
               Créons ensemble quelque chose d'extraordinaire
             </motion.p>
@@ -70,19 +70,19 @@ const Contact = () => {
             {/* Contact Information */}
             <motion.div variants={itemVariants} className="space-y-8">
               <div className="relative">
-                <div className="absolute -inset-1 bg-gradient-to-r from-[#1EAEDB] to-[#0FA0CE] rounded-lg blur opacity-20 transition duration-1000" />
-                <div className="relative bg-[#221F26]/90 backdrop-blur-xl p-8 rounded-lg border border-white/10">
-                  <h2 className="text-2xl font-bold mb-6 text-[#D3E4FD]">Informations de Contact</h2>
+                <div className="absolute -inset-1 bg-gradient-to-r from-[#B8860B] to-[#D4AF37] rounded-lg blur opacity-10 transition duration-1000" />
+                <div className="relative bg-[#221F26]/90 backdrop-blur-xl p-8 rounded-lg border border-[#B8860B]/20">
+                  <h2 className="text-2xl font-bold mb-6 text-[#D4AF37]">Informations de Contact</h2>
                   <div className="space-y-6">
                     <motion.div
                       whileHover={{ x: 10 }}
                       className="flex items-center space-x-4 group"
                     >
-                      <div className="w-12 h-12 bg-[#1EAEDB]/10 rounded-full flex items-center justify-center group-hover:bg-[#1EAEDB]/20 transition-colors">
-                        <Mail className="h-6 w-6 text-[#1EAEDB]" />
+                      <div className="w-12 h-12 bg-[#B8860B]/10 rounded-full flex items-center justify-center group-hover:bg-[#B8860B]/20 transition-colors">
+                        <Mail className="h-6 w-6 text-[#D4AF37]" />
                       </div>
                       <div>
-                        <p className="font-medium text-[#1EAEDB]">Email</p>
+                        <p className="font-medium text-[#D4AF37]">Email</p>
                         <p className="text-[#C8C8C9]">contact@vilart.com</p>
                       </div>
                     </motion.div>
@@ -90,11 +90,11 @@ const Contact = () => {
                       whileHover={{ x: 10 }}
                       className="flex items-center space-x-4 group"
                     >
-                      <div className="w-12 h-12 bg-[#1EAEDB]/10 rounded-full flex items-center justify-center group-hover:bg-[#1EAEDB]/20 transition-colors">
-                        <Phone className="h-6 w-6 text-[#1EAEDB]" />
+                      <div className="w-12 h-12 bg-[#B8860B]/10 rounded-full flex items-center justify-center group-hover:bg-[#B8860B]/20 transition-colors">
+                        <Phone className="h-6 w-6 text-[#D4AF37]" />
                       </div>
                       <div>
-                        <p className="font-medium text-[#1EAEDB]">Téléphone</p>
+                        <p className="font-medium text-[#D4AF37]">Téléphone</p>
                         <p className="text-[#C8C8C9]">+1 234 567 890</p>
                       </div>
                     </motion.div>
@@ -102,11 +102,11 @@ const Contact = () => {
                       whileHover={{ x: 10 }}
                       className="flex items-center space-x-4 group"
                     >
-                      <div className="w-12 h-12 bg-[#1EAEDB]/10 rounded-full flex items-center justify-center group-hover:bg-[#1EAEDB]/20 transition-colors">
-                        <MapPin className="h-6 w-6 text-[#1EAEDB]" />
+                      <div className="w-12 h-12 bg-[#B8860B]/10 rounded-full flex items-center justify-center group-hover:bg-[#B8860B]/20 transition-colors">
+                        <MapPin className="h-6 w-6 text-[#D4AF37]" />
                       </div>
                       <div>
-                        <p className="font-medium text-[#1EAEDB]">Adresse</p>
+                        <p className="font-medium text-[#D4AF37]">Adresse</p>
                         <p className="text-[#C8C8C9]">123 Rue de la Musique, Paris</p>
                       </div>
                     </motion.div>
@@ -115,9 +115,9 @@ const Contact = () => {
               </div>
 
               <div className="relative">
-                <div className="absolute -inset-1 bg-gradient-to-r from-[#1EAEDB] to-[#0FA0CE] rounded-lg blur opacity-20 transition duration-1000" />
-                <div className="relative bg-[#221F26]/90 backdrop-blur-xl p-8 rounded-lg border border-white/10">
-                  <h2 className="text-2xl font-bold mb-6 text-[#D3E4FD]">Heures d'Ouverture</h2>
+                <div className="absolute -inset-1 bg-gradient-to-r from-[#B8860B] to-[#D4AF37] rounded-lg blur opacity-10 transition duration-1000" />
+                <div className="relative bg-[#221F26]/90 backdrop-blur-xl p-8 rounded-lg border border-[#B8860B]/20">
+                  <h2 className="text-2xl font-bold mb-6 text-[#D4AF37]">Heures d'Ouverture</h2>
                   <div className="space-y-2 text-[#C8C8C9]">
                     <p>Lundi - Vendredi: 9h00 - 18h00</p>
                     <p>Samedi: 10h00 - 16h00</p>
@@ -130,38 +130,38 @@ const Contact = () => {
             {/* Contact Form */}
             <motion.div variants={itemVariants}>
               <form onSubmit={handleSubmit} className="relative">
-                <div className="absolute -inset-1 bg-gradient-to-r from-[#1EAEDB] to-[#0FA0CE] rounded-lg blur opacity-20 transition duration-1000" />
-                <div className="relative bg-[#221F26]/90 backdrop-blur-xl p-8 rounded-lg border border-white/10">
+                <div className="absolute -inset-1 bg-gradient-to-r from-[#B8860B] to-[#D4AF37] rounded-lg blur opacity-10 transition duration-1000" />
+                <div className="relative bg-[#221F26]/90 backdrop-blur-xl p-8 rounded-lg border border-[#B8860B]/20">
                   <div className="space-y-6">
                     <div>
-                      <label htmlFor="name" className="block text-sm font-medium mb-2 text-[#D3E4FD]">
+                      <label htmlFor="name" className="block text-sm font-medium mb-2 text-[#D4AF37]">
                         Nom
                       </label>
                       <input
                         type="text"
                         id="name"
-                        className="w-full px-4 py-3 bg-[#1A1F2C]/80 border border-white/10 rounded-lg focus:ring-2 focus:ring-[#1EAEDB] focus:border-transparent transition-colors text-white"
+                        className="w-full px-4 py-3 bg-[#1A1F2C]/80 border border-[#B8860B]/20 rounded-lg focus:ring-2 focus:ring-[#D4AF37] focus:border-transparent transition-colors text-white"
                         required
                       />
                     </div>
                     <div>
-                      <label htmlFor="email" className="block text-sm font-medium mb-2 text-[#D3E4FD]">
+                      <label htmlFor="email" className="block text-sm font-medium mb-2 text-[#D4AF37]">
                         Email
                       </label>
                       <input
                         type="email"
                         id="email"
-                        className="w-full px-4 py-3 bg-[#1A1F2C]/80 border border-white/10 rounded-lg focus:ring-2 focus:ring-[#1EAEDB] focus:border-transparent transition-colors text-white"
+                        className="w-full px-4 py-3 bg-[#1A1F2C]/80 border border-[#B8860B]/20 rounded-lg focus:ring-2 focus:ring-[#D4AF37] focus:border-transparent transition-colors text-white"
                         required
                       />
                     </div>
                     <div>
-                      <label htmlFor="subject" className="block text-sm font-medium mb-2 text-[#D3E4FD]">
+                      <label htmlFor="subject" className="block text-sm font-medium mb-2 text-[#D4AF37]">
                         Sujet
                       </label>
                       <select
                         id="subject"
-                        className="w-full px-4 py-3 bg-[#1A1F2C]/80 border border-white/10 rounded-lg focus:ring-2 focus:ring-[#1EAEDB] focus:border-transparent transition-colors text-white"
+                        className="w-full px-4 py-3 bg-[#1A1F2C]/80 border border-[#B8860B]/20 rounded-lg focus:ring-2 focus:ring-[#D4AF37] focus:border-transparent transition-colors text-white"
                         required
                       >
                         <option value="">Sélectionnez un sujet</option>
@@ -171,13 +171,13 @@ const Contact = () => {
                       </select>
                     </div>
                     <div>
-                      <label htmlFor="message" className="block text-sm font-medium mb-2 text-[#D3E4FD]">
+                      <label htmlFor="message" className="block text-sm font-medium mb-2 text-[#D4AF37]">
                         Message
                       </label>
                       <textarea
                         id="message"
                         rows={6}
-                        className="w-full px-4 py-3 bg-[#1A1F2C]/80 border border-white/10 rounded-lg focus:ring-2 focus:ring-[#1EAEDB] focus:border-transparent transition-colors text-white resize-none"
+                        className="w-full px-4 py-3 bg-[#1A1F2C]/80 border border-[#B8860B]/20 rounded-lg focus:ring-2 focus:ring-[#D4AF37] focus:border-transparent transition-colors text-white resize-none"
                         required
                       ></textarea>
                     </div>
@@ -185,7 +185,7 @@ const Contact = () => {
                       type="submit"
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
-                      className={`w-full px-6 py-3 bg-gradient-to-r from-[#1EAEDB] to-[#0FA0CE] text-white font-semibold rounded-lg flex items-center justify-center space-x-2 transition-all duration-300 hover:from-[#33C3F0] hover:to-[#1EAEDB] ${
+                      className={`w-full px-6 py-3 bg-gradient-to-r from-[#B8860B] to-[#D4AF37] text-white font-semibold rounded-lg flex items-center justify-center space-x-2 transition-all duration-300 hover:from-[#D4AF37] hover:to-[#B8860B] ${
                         isSubmitted ? 'bg-green-500' : ''
                       }`}
                     >
