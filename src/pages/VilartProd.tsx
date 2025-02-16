@@ -61,25 +61,31 @@ const VilartProd = () => {
 
   const portfolio: MediaItem[] = [
     {
+      id: 1,
       type: 'video',
       url: "https://player.vimeo.com/external/403619009.sd.mp4?s=51fb1fe1c5a2088f1d811e944e6e1231c1f2b21f&profile_id=164&oauth2_token_id=57447761",
-      thumbnail: "https://images.unsplash.com/photo-1598653222000-6b7b7a552625",
-      title: "Production de Clip",
-      category: "Vidéo"
+      thumbnail: "https://images.unsplash.com/photo-1492684223066-81342ee5ff30",
+      title: "Music Production",
+      description: "Professional studio recording session",
+      category: "Studio"
     },
     {
+      id: 2,
       type: 'image',
-      url: "https://images.unsplash.com/photo-1598653222000-6b7b7a552625",
-      thumbnail: "https://images.unsplash.com/photo-1598653222000-6b7b7a552625",
-      title: "Session Studio",
-      category: "Musique"
+      url: "https://images.unsplash.com/photo-1514525253161-7a46d19cd819",
+      thumbnail: "https://images.unsplash.com/photo-1514525253161-7a46d19cd819",
+      title: "Sound Design",
+      description: "Creative sound design project",
+      category: "Audio"
     },
     {
+      id: 3,
       type: 'video',
       url: "https://player.vimeo.com/external/434045526.sd.mp4?s=c27eecc69a27dbc4ff2b87d38afc35f1a9e7c02d&profile_id=165&oauth2_token_id=57447761",
-      thumbnail: "https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae",
-      title: "Développement d'Artiste",
-      category: "Management"
+      thumbnail: "https://images.unsplash.com/photo-1501281668745-f7f57925c3b4",
+      title: "Live Recording",
+      description: "Live music recording session",
+      category: "Live"
     }
   ];
 
