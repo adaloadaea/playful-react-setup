@@ -1,8 +1,12 @@
 
+import React, { useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { useEffect } from 'react';
 
-const LoadingScreen = ({ onLoadingComplete }: { onLoadingComplete: () => void }) => {
+interface LoadingScreenProps {
+  onLoadingComplete: () => void;
+}
+
+const LoadingScreen: React.FC<LoadingScreenProps> = ({ onLoadingComplete }) => {
   useEffect(() => {
     // Trigger loading complete after animation
     const timer = setTimeout(() => {
