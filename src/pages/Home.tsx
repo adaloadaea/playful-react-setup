@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { PartyPopper, ArrowRight, Music2, Video, ChevronDown } from 'lucide-react';
@@ -7,53 +6,6 @@ import VideoBackground from '../components/VideoBackground';
 import PhotoGallery from '../components/PhotoGallery';
 
 const Home = () => {
-  const [selectedMedia, setSelectedMedia] = useState<MediaItem | null>(null);
-  
-  const galleryItems: MediaItem[] = [
-    {
-      type: 'video',
-      url: "https://player.vimeo.com/external/403619009.sd.mp4?s=51fb1fe1c5a2088f1d811e944e6e1231c1f2b21f&profile_id=164&oauth2_token_id=57447761",
-      thumbnail: "/images/banners/events-banner.jpg",
-      title: "Concert Live",
-      category: "Event"
-    },
-    {
-      type: 'image',
-      url: "/images/banners/studio-banner.jpg",
-      thumbnail: "/images/banners/studio-banner.jpg",
-      title: "Studio Session",
-      category: "Production"
-    },
-    {
-      type: 'video',
-      url: "https://player.vimeo.com/external/434045526.sd.mp4?s=c27eecc69a27dbc4ff2b87d38afc35f1a9e7c02d&profile_id=165&oauth2_token_id=57447761",
-      thumbnail: "/images/banners/event-private-banner.jpg",
-      title: "Événement Privé",
-      category: "Event"
-    },
-    {
-      type: 'image',
-      url: "/images/banners/production-banner.jpg",
-      thumbnail: "/images/banners/production-banner.jpg",
-      title: "Production",
-      category: "Studio"
-    },
-    {
-      type: 'video',
-      url: "https://player.vimeo.com/external/451776276.sd.mp4?s=2e4be06fb91c7a572aa2b74b26c72bfed800c583&profile_id=165&oauth2_token_id=57447761",
-      thumbnail: "/images/banners/festival-banner.jpg",
-      title: "Festival",
-      category: "Event"
-    },
-    {
-      type: 'image',
-      url: "/images/banners/performance-banner.jpg",
-      thumbnail: "/images/banners/performance-banner.jpg",
-      title: "Performance",
-      category: "Live"
-    }
-  ];
-
   const services = [
     {
       icon: <Music2 className="h-12 w-12" />,

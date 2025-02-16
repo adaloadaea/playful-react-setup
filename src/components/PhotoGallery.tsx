@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
-import { Dialog, DialogContent } from "./ui/dialog";
+import { Dialog, DialogContent, DialogOverlay } from "./ui/dialog";
 
 const allPhotos = [
   {
@@ -153,15 +153,15 @@ const PhotoGallery = () => {
         </div>
       </div>
 
-      <Dialog 
-        open={selectedPhoto !== null} 
-        onOpenChange={() => setSelectedPhoto(null)}
-      >
-        <DialogContent className="max-w-7xl h-[90vh] p-0 bg-black/95 border-none">
+      <Dialog open={selectedPhoto !== null} onOpenChange={() => setSelectedPhoto(null)}>
+        <DialogContent className="max-w-[95vw] w-full h-[90vh] p-0 bg-black/95 border-none">
           {selectedPhoto !== null && (
             <div className="relative w-full h-full flex items-center justify-center">
               <button
-                onClick={() => setSelectedPhoto(null)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setSelectedPhoto(null);
+                }}
                 className="absolute right-4 top-4 z-50 text-gold-400 hover:text-gold-300 transition-colors"
               >
                 <X className="h-6 w-6" />
@@ -169,7 +169,10 @@ const PhotoGallery = () => {
 
               <motion.button
                 className="absolute left-4 z-50 text-gold-400 hover:text-gold-300 transition-colors md:left-8"
-                onClick={handlePrevious}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handlePrevious();
+                }}
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
               >
@@ -198,7 +201,10 @@ const PhotoGallery = () => {
 
               <motion.button
                 className="absolute right-4 z-50 text-gold-400 hover:text-gold-300 transition-colors md:right-8"
-                onClick={handleNext}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleNext();
+                }}
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
               >
