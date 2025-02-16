@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
-import { PartyPopper, ArrowRight, Music2, Video, Play, X, ChevronDown } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { PartyPopper, ArrowRight, Music2, Video, ChevronDown } from 'lucide-react';
 import HeroVideo from '../components/HeroVideo';
 import VideoBackground from '../components/VideoBackground';
-import { MediaItem } from '../types/media';
+import PhotoGallery from '../components/PhotoGallery';
 
 const Home = () => {
   const [selectedMedia, setSelectedMedia] = useState<MediaItem | null>(null);
@@ -238,99 +238,7 @@ const Home = () => {
         </div>
       </section>
 
-      <section className="py-20 px-4 bg-gradient-to-b from-black to-rich-black">
-        <div className="max-w-7xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-16"
-          >
-            <h2 className="text-3xl md:text-5xl font-bold mb-4 text-white">
-              Notre Galerie
-            </h2>
-            <p className="text-xl text-white/80 mb-8">
-              Un aperçu de nos réalisations
-            </p>
-          </motion.div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {galleryItems.map((item, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, scale: 0.9 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-                whileHover={{ scale: 1.03 }}
-                className="relative aspect-video rounded-xl overflow-hidden cursor-pointer group"
-                onClick={() => setSelectedMedia(item)}
-              >
-                <img
-                  src={item.thumbnail}
-                  alt={item.title}
-                  className="w-full h-full object-cover"
-                  loading="lazy"
-                />
-                <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <div className="absolute inset-0 flex flex-col items-center justify-center text-white">
-                    <div className="w-16 h-16 rounded-full bg-gold-500/90 flex items-center justify-center mb-4">
-                      {item.type === 'video' ? (
-                        <Play className="w-8 h-8 text-black" />
-                      ) : (
-                        <ArrowRight className="w-8 h-8 text-black" />
-                      )}
-                    </div>
-                    <h3 className="text-lg font-bold">{item.title}</h3>
-                    <span className="text-sm text-gold-400">{item.category}</span>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <AnimatePresence>
-        {selectedMedia && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/95 z-50 flex items-center justify-center p-4"
-            onClick={() => setSelectedMedia(null)}
-          >
-            <motion.div
-              initial={{ scale: 0.9 }}
-              animate={{ scale: 1 }}
-              exit={{ scale: 0.9 }}
-              className="relative max-w-6xl w-full aspect-video rounded-lg overflow-hidden"
-              onClick={(e) => e.stopPropagation()}
-            >
-              {selectedMedia.type === 'video' ? (
-                <video
-                  src={selectedMedia.url}
-                  controls
-                  autoPlay
-                  className="w-full h-full object-contain"
-                />
-              ) : (
-                <img
-                  src={selectedMedia.url}
-                  alt={selectedMedia.title}
-                  className="w-full h-full object-contain"
-                />
-              )}
-              <button
-                onClick={() => setSelectedMedia(null)}
-                className="absolute top-4 right-4 w-10 h-10 bg-black/80 rounded-full flex items-center justify-center text-white hover:text-gold-400 transition-colors"
-              >
-                <X className="w-6 h-6" />
-              </button>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <PhotoGallery />
     </div>
   );
 };

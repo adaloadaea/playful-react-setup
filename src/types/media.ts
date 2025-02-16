@@ -6,5 +6,5 @@ export interface MediaItem {
   thumbnail: string;
   title: string;
   description: string;
-  category?: string;  // Making category optional to maintain compatibility
+  category?: string;
 }
