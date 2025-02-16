@@ -1,11 +1,10 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import { Dialog, DialogContent } from "./ui/dialog";
-import { Button } from "./ui/button";
 
-const galleryPhotos = [
+const allPhotos = [
   {
     id: 1,
     type: 'image',
@@ -69,19 +68,18 @@ const galleryPhotos = [
     thumbnail: "/Vitaprod/شارع الحبيب بورقيبة 🥹 شكرا على اللحظات التي لا تنسى ❤️❤️_مالها إلا البداية .. ولنا _1.jpg",
     title: "Habib Bourguiba Avenue",
     description: "Unforgettable moments"
-  },
-  {
-    id: 9,
-    type: 'image',
-    url: "/Vitaprod/شارع الحبيب بورقيبة 🥹 شكرا على اللحظات التي لا تنسى ❤️❤️_مالها إلا البداية .. ولنا _2.jpg",
-    thumbnail: "/Vitaprod/شارع الحبيب بورقيبة 🥹 شكرا على اللحظات التي لا تنسى ❤️❤️_مالها إلا البداية .. ولنا _2.jpg",
-    title: "Street Performance",
-    description: "Live music in the heart of the city"
   }
 ];
 
 const PhotoGallery = () => {
   const [selectedPhoto, setSelectedPhoto] = useState<number | null>(null);
+  const [galleryPhotos, setGalleryPhotos] = useState(allPhotos);
+
+  useEffect(() => {
+    // Shuffle the photos on component mount
+    const shuffledPhotos = [...allPhotos].sort(() => Math.random() - 0.5);
+    setGalleryPhotos(shuffledPhotos);
+  }, []);
 
   const handlePrevious = () => {
     setSelectedPhoto((current) => 
@@ -95,13 +93,17 @@ const PhotoGallery = () => {
     );
   };
 
-  // Handle keyboard navigation
-  const handleKeyDown = (e: KeyboardEvent) => {
-    if (selectedPhoto === null) return;
-    if (e.key === 'ArrowLeft') handlePrevious();
-    if (e.key === 'ArrowRight') handleNext();
-    if (e.key === 'Escape') setSelectedPhoto(null);
-  };
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (selectedPhoto === null) return;
+      if (e.key === 'ArrowLeft') handlePrevious();
+      if (e.key === 'ArrowRight') handleNext();
+      if (e.key === 'Escape') setSelectedPhoto(null);
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [selectedPhoto]);
 
   return (
     <section className="py-20 bg-gradient-to-b from-black to-rich-black">
@@ -131,16 +133,17 @@ const PhotoGallery = () => {
               className="relative aspect-square cursor-pointer group"
               onClick={() => setSelectedPhoto(index)}
             >
-              <div className="absolute inset-0 rounded-lg overflow-hidden">
-                <img
+              <div className="absolute inset-0 rounded-lg overflow-hidden bg-rich-black">
+                <motion.img
                   src={photo.thumbnail}
                   alt={photo.title}
                   className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
                   loading="lazy"
+                  whileHover={{ scale: 1.1 }}
                 />
-                <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                   <div className="absolute bottom-0 left-0 right-0 p-4">
-                    <h3 className="text-lg font-semibold text-white">{photo.title}</h3>
+                    <h3 className="text-lg font-semibold text-gold-400">{photo.title}</h3>
                     <p className="text-sm text-white/80">{photo.description}</p>
                   </div>
                 </div>
@@ -159,17 +162,19 @@ const PhotoGallery = () => {
             <div className="relative w-full h-full flex items-center justify-center">
               <button
                 onClick={() => setSelectedPhoto(null)}
-                className="absolute right-4 top-4 z-50 text-white/80 hover:text-white"
+                className="absolute right-4 top-4 z-50 text-gold-400 hover:text-gold-300 transition-colors"
               >
                 <X className="h-6 w-6" />
               </button>
 
-              <button
-                className="absolute left-4 z-50 text-white/80 hover:text-white md:left-8"
+              <motion.button
+                className="absolute left-4 z-50 text-gold-400 hover:text-gold-300 transition-colors md:left-8"
                 onClick={handlePrevious}
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
               >
                 <ChevronLeft className="h-8 w-8 md:h-12 md:w-12" />
-              </button>
+              </motion.button>
 
               <AnimatePresence mode="wait">
                 <motion.div
@@ -180,28 +185,42 @@ const PhotoGallery = () => {
                   transition={{ duration: 0.2 }}
                   className="w-full h-full flex items-center justify-center p-4 md:p-8"
                 >
-                  <img
+                  <motion.img
                     src={galleryPhotos[selectedPhoto].url}
                     alt={galleryPhotos[selectedPhoto].title}
-                    className="max-w-full max-h-full object-contain"
+                    className="max-w-full max-h-full object-contain rounded-lg shadow-2xl"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
                   />
                 </motion.div>
               </AnimatePresence>
 
-              <button
-                className="absolute right-4 z-50 text-white/80 hover:text-white md:right-8"
+              <motion.button
+                className="absolute right-4 z-50 text-gold-400 hover:text-gold-300 transition-colors md:right-8"
                 onClick={handleNext}
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
               >
                 <ChevronRight className="h-8 w-8 md:h-12 md:w-12" />
-              </button>
+              </motion.button>
 
-              <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black to-transparent">
-                <h2 className="text-xl md:text-2xl font-bold text-white">
+              <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black via-black/80 to-transparent">
+                <motion.h2 
+                  className="text-xl md:text-2xl font-bold text-gold-400"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                >
                   {galleryPhotos[selectedPhoto].title}
-                </h2>
-                <p className="text-white/80 mt-2">
+                </motion.h2>
+                <motion.p 
+                  className="text-white/80 mt-2"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.1 }}
+                >
                   {galleryPhotos[selectedPhoto].description}
-                </p>
+                </motion.p>
               </div>
             </div>
           )}
