@@ -110,33 +110,6 @@ export const menuItems: MenuItem[] = [
     ]
   },
   {
-    title: "Vêtements Médicaux",
-    image: "/lovable-uploads/f0e25fb0-eac3-41ef-85f4-134f71438f42.png",
-    path: "/vetements-medicaux",
-    topText: "Vêtements",
-    bottomText: "Médicaux",
-    subItems: [
-      {
-        title: "Blouses Médicales",
-        description: "Pour les professionnels de santé",
-        image: "/lovable-uploads/f0e25fb0-eac3-41ef-85f4-134f71438f42.png",
-        path: "/vetements-medicaux/blouses"
-      },
-      {
-        title: "Tuniques",
-        description: "Confort et praticité",
-        image: "/lovable-uploads/f0e25fb0-eac3-41ef-85f4-134f71438f42.png",
-        path: "/vetements-medicaux/tuniques"
-      },
-      {
-        title: "Accessoires Médicaux",
-        description: "Équipements essentiels",
-        image: "/lovable-uploads/f0e25fb0-eac3-41ef-85f4-134f71438f42.png",
-        path: "/vetements-medicaux/accessoires"
-      }
-    ]
-  },
-  {
     title: "Vêtements de travail",
     image: "/lovable-uploads/f0e25fb0-eac3-41ef-85f4-134f71438f42.png",
     path: "/vetements-travail",
@@ -154,6 +127,18 @@ export const menuItems: MenuItem[] = [
         description: "Robustes et fonctionnelles",
         image: "/lovable-uploads/f0e25fb0-eac3-41ef-85f4-134f71438f42.png",
         path: "/vetements-travail/vestes"
+      },
+      {
+        title: "Blouses Médicales",
+        description: "Pour les professionnels de santé",
+        image: "/lovable-uploads/f0e25fb0-eac3-41ef-85f4-134f71438f42.png",
+        path: "/vetements-travail/blouses"
+      },
+      {
+        title: "Tuniques Médicales",
+        description: "Confort et praticité",
+        image: "/lovable-uploads/f0e25fb0-eac3-41ef-85f4-134f71438f42.png",
+        path: "/vetements-travail/tuniques"
       },
       {
         title: "Équipements",

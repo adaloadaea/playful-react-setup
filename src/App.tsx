@@ -18,7 +18,6 @@ import TableirsBoucher from './pages/categories/vetements-boucher/TableirsBouche
 import VestesBoucher from './pages/categories/vetements-boucher/VestesBoucher';
 import AccessoiresBoucher from './pages/categories/vetements-boucher/AccessoiresBoucher';
 import VetementsHotellerie from './pages/categories/VetementsHotellerie';
-import VetementsMedicaux from './pages/categories/VetementsMedicaux';
 import VetementsEsthetique from './pages/categories/VetementsEsthetique';
 import VetementsTravail from './pages/categories/VetementsTravail';
 import Chaussures from './pages/categories/Chaussures';
@@ -50,7 +49,6 @@ function App() {
         <Route path="/vetements-boucher/vestes" element={<VestesBoucher />} />
         <Route path="/vetements-boucher/accessoires" element={<AccessoiresBoucher />} />
         <Route path="/vetements-hotellerie" element={<VetementsHotellerie />} />
-        <Route path="/vetements-medicaux" element={<VetementsMedicaux />} />
         <Route path="/vetements-esthetique" element={<VetementsEsthetique />} />
         <Route path="/vetements-travail" element={<VetementsTravail />} />
         <Route path="/chaussures" element={<Chaussures />} />

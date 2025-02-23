@@ -61,14 +61,14 @@ export const products: ProductConfig[] = [
     isPersonalizable: true
   },
 
-  // Vêtements Médicaux
+  // Now part of Vêtements de travail
   {
     id: "blouse-medicale-1",
     name: "Blouse Médicale Premium",
     description: "Blouse médicale confortable et professionnelle",
     startingPrice: "69.99",
     image: "/ProductImages/BlackButtonsTshirt.png",
-    category: "vetements-medicaux",
+    category: "vetements-travail",
     type: "blouses",
     metier_type: "Médical",
     isPersonalizable: true
@@ -79,7 +79,7 @@ export const products: ProductConfig[] = [
     description: "Pantalon médical ergonomique et respirant",
     startingPrice: "49.99",
     image: "/ProductImages/BlackButtonsTshirt.png",
-    category: "vetements-medicaux",
+    category: "vetements-travail",
     type: "pantalons",
     metier_type: "Médical",
     isPersonalizable: true
