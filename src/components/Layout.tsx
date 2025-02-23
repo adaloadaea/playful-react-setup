@@ -119,6 +119,7 @@ export const Layout = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
+  // Add search functionality
   const filteredProducts = searchQuery.length > 0
     ? products.filter(product =>
         product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -126,6 +127,7 @@ export const Layout = () => {
       )
     : [];
 
+  // Load favorites from localStorage
   useEffect(() => {
     const favoritesStr = localStorage.getItem('favorites');
     if (favoritesStr) {
@@ -137,8 +139,9 @@ export const Layout = () => {
         setFavorites([]);
       }
     }
-  }, [location.pathname]);
+  }, [location.pathname]); // Reload when route changes
 
+  // Check for designs in sessionStorage
   useEffect(() => {
     const designs = sessionStorage.getItem('designs');
     if (designs) {
@@ -165,10 +168,10 @@ export const Layout = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col overflow-x-hidden">
+    <div className="min-h-screen flex flex-col">
       {/* Top Banner */}
       <div className="w-full bg-[#FFD700] py-2">
-        <div className="container mx-auto text-center text-xs sm:text-sm font-medium flex items-center justify-center gap-2 px-4">
+        <div className="container mx-auto text-center text-sm font-medium flex items-center justify-center gap-2">
           <Percent className="h-4 w-4" />
           <span>Livraison offerte dès 69TND d'achats !</span>
         </div>
@@ -178,7 +181,7 @@ export const Layout = () => {
       <nav className="w-full bg-white border-b sticky top-0 z-50 shadow-sm">
         <div className="container mx-auto">
           {/* Upper Navigation */}
-          <div className="flex items-center justify-between py-2 sm:py-4 px-4">
+          <div className="flex items-center justify-between py-4 px-4">
             {/* Mobile Menu */}
             <Sheet>
               <SheetTrigger asChild>
@@ -193,7 +196,7 @@ export const Layout = () => {
                 
                 {/* Logo Header */}
                 <div className="bg-white p-4 flex items-center justify-center border-b">
-                  <img src="/logo.png" alt="ELLES" className="h-10 sm:h-14" />
+                  <img src="/logo.png" alt="ELLES" className="h-12" />
                 </div>
 
                 {/* Menu Items */}
@@ -226,11 +229,11 @@ export const Layout = () => {
 
             {/* Logo */}
             <Link to="/" className="flex-shrink-0">
-              <img src="/logo.png" alt="ELLES" className="h-10 sm:h-14" />
+              <img src="/logo.png" alt="ELLES" className="h-14" />
             </Link>
 
             {/* Search Bar */}
-            <div className="flex-1 max-w-2xl px-2 sm:px-8 hidden md:block">
+            <div className="flex-1 max-w-2xl px-8 hidden md:block">
               <div className="relative">
                 <input
                   type="text"
@@ -240,7 +243,7 @@ export const Layout = () => {
                     setSearchQuery(e.target.value);
                     setShowSearchResults(true);
                   }}
-                  className="w-full px-4 py-2 pl-10 border rounded-full focus:outline-none focus:ring-2 focus:ring-[#00A6E6]/20 focus:border-[#00A6E6] transition-all text-sm"
+                  className="w-full px-4 py-2.5 pl-10 border rounded-full focus:outline-none focus:ring-2 focus:ring-[#00A6E6]/20 focus:border-[#00A6E6] transition-all"
                 />
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
                 
@@ -284,28 +287,28 @@ export const Layout = () => {
             </div>
 
             {/* Right Actions */}
-            <div className="flex items-center gap-2 sm:gap-6">
+            <div className="flex items-center gap-6">
               <button
                 onClick={() => navigate('/favorites')}
                 className="hidden md:flex items-center gap-2 text-gray-600 hover:text-black transition-colors"
               >
-                <Heart className="h-5 w-5 sm:h-6 sm:w-6" />
-                <span className="text-sm font-medium hidden lg:inline">Wishlist</span>
+                <Heart className="h-6 w-6" />
+                <span className="text-sm font-medium">Wishlist</span>
               </button>
 
               <button
                 onClick={() => navigate('/cart')}
                 className="flex items-center gap-2 text-gray-600 hover:text-black transition-colors"
               >
-                <ShoppingCart className="h-5 w-5 sm:h-6 sm:w-6" />
-                <span className="text-sm font-medium hidden lg:inline">Panier</span>
+                <ShoppingCart className="h-6 w-6" />
+                <span className="text-sm font-medium hidden md:inline">Panier</span>
               </button>
 
               <button
                 onClick={() => navigate('/devis')}
-                className="hidden md:flex items-center gap-2 px-4 sm:px-6 py-2 bg-[#333333] text-white rounded-md hover:bg-[#333333]/90 transition-colors shadow-sm text-xs sm:text-sm"
+                className="hidden md:flex items-center gap-2 px-6 py-2.5 bg-[#333333] text-white rounded-md hover:bg-[#333333]/90 transition-colors shadow-sm"
               >
-                <ClipboardList className="h-4 w-4 sm:h-5 sm:w-5" />
+                <ClipboardList className="h-5 w-5" />
                 <span className="font-medium">DEMANDE DE DEVIS</span>
               </button>
             </div>
@@ -316,24 +319,24 @@ export const Layout = () => {
             <div className="relative">
               <input
                 type="text"
-                placeholder="Recherchez votre vêtement"
+                placeholder="Recherchez votre vêtement professionnel"
                 value={searchQuery}
                 onChange={(e) => {
                   setSearchQuery(e.target.value);
                   setShowSearchResults(true);
                 }}
-                className="w-full px-4 py-2 pl-10 border rounded-full focus:outline-none focus:ring-2 focus:ring-[#00A6E6]/20 focus:border-[#00A6E6] transition-all text-sm"
+                className="w-full px-4 py-2 pl-10 border rounded-full focus:outline-none focus:ring-2 focus:ring-[#00A6E6]/20 focus:border-[#00A6E6] transition-all"
               />
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
             </div>
           </div>
 
           {/* Desktop Lower Navigation */}
-          <div className="hidden md:block border-t overflow-x-auto">
+          <div className="hidden md:block border-t">
             <div className="container mx-auto px-4">
               <div className="flex items-center justify-between py-3 max-w-[1400px] mx-auto">
-                <NavigationMenu className="-ml-4 lg:-ml-12">
-                  <NavigationMenuList className="space-x-1">
+                <NavigationMenu className="-ml-12">
+                  <NavigationMenuList>
                     {menuItems.map((item, index) => (
                       <CategoryLink 
                         key={index}
@@ -346,16 +349,16 @@ export const Layout = () => {
                   </NavigationMenuList>
                 </NavigationMenu>
 
-                <div className="flex items-center gap-2 sm:gap-3">
+                <div className="flex items-center gap-3">
                   <button
                     onClick={() => navigate('/marques')}
-                    className="px-4 sm:px-6 py-2 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors text-xs sm:text-sm font-medium flex items-center gap-2 whitespace-nowrap"
+                    className="px-6 py-2.5 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors text-sm font-medium flex items-center gap-2"
                   >
                     <span>Personalisation</span>
                   </button>
                   <button
                     onClick={() => navigate('/metiers')}
-                    className="px-4 sm:px-6 py-2 bg-[#FFD700] text-black rounded-md hover:bg-[#FFD700]/90 transition-colors text-xs sm:text-sm font-medium shadow-sm flex items-center gap-2 whitespace-nowrap"
+                    className="px-6 py-2.5 bg-[#FFD700] text-black rounded-md hover:bg-[#FFD700]/90 transition-colors text-sm font-medium shadow-sm flex items-center gap-2"
                   >
                     <span>MÉTIERS</span>
                   </button>
@@ -366,7 +369,7 @@ export const Layout = () => {
         </div>
       </nav>
 
-      <main className="flex-grow overflow-x-hidden" onClick={() => setShowSearchResults(false)}>
+      <main className="flex-grow" onClick={() => setShowSearchResults(false)}>
         <Outlet />
       </main>
 
@@ -403,7 +406,6 @@ export const Layout = () => {
 
       <Footer />
 
-      {/* Sheet and other modals */}
       <Sheet open={isSubmenuOpen} onOpenChange={setIsSubmenuOpen}>
         <SheetContent side="left" className="w-full sm:w-[350px] p-0">
           {activeMenuItem && (
