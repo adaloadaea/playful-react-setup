@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Menu, X, ChevronDown, ChevronRight, ArrowLeft } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -115,6 +114,21 @@ export const Navigation = () => {
                 ))}
               </NavigationMenuList>
             </NavigationMenu>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => navigate('/personalization')}
+              className="px-6 py-2.5 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors text-sm font-medium flex items-center gap-2"
+            >
+              <span>Personalisation</span>
+            </button>
+            <button
+              onClick={() => navigate('/metiers')}
+              className="px-6 py-2.5 bg-[#FFD700] text-black rounded-md hover:bg-[#FFD700]/90 transition-colors text-sm font-medium shadow-sm flex items-center gap-2"
+            >
+              <span>MÉTIERS</span>
+            </button>
           </div>
 
           {/* Mobile Menu */}
