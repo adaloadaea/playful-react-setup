@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useCallback } from 'react';
 import { 
   View, 
@@ -147,7 +146,7 @@ const Button = ({
   );
 };
 
-export default function LoginScreen() {
+function LoginScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -363,7 +362,7 @@ const styles = StyleSheet.create({
     paddingBottom: hp(20),
   },
   spacer: {
-    height: hp(20), // This adds extra space at the top of the form
+    height: hp(20),
   },
   welcomeText: {
     fontSize: fp(24),
@@ -455,6 +454,8 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   bottomSpacer: {
-    height: hp(30), // Extra space at the bottom of the form
+    height: hp(30),
   },
 });
+
+export default LoginScreen;

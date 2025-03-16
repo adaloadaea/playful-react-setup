@@ -14,6 +14,8 @@ export default function TabsLayout() {
       <Tabs.Screen name="incidents" />
       <Tabs.Screen name="map" />
       <Tabs.Screen name="messages" />
+      <Tabs.Screen name="messages/[id]" />
+      <Tabs.Screen name="messages/index" />
       <Tabs.Screen name="settings" />
     </Tabs>
   );
