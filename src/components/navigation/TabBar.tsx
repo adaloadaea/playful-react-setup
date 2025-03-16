@@ -89,7 +89,7 @@ export default function TabBar() {
                 ]}
               >
                 <tab.icon 
-                  size={wp(20)} 
+                  size={wp(18)} 
                   color={isActive ? colors.primary : colors.secondary} 
                   strokeWidth={isActive ? 2.5 : 2}
                 />
@@ -127,7 +127,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     paddingTop: hp(8),
     paddingBottom: Platform.OS === 'ios' ? hp(25) : hp(8),
-    paddingHorizontal: wp(5),
+    paddingHorizontal: wp(2), // Reduced from wp(5) to wp(2)
     justifyContent: 'space-between',
     borderTopWidth: 1,
     ...Platform.select({
@@ -146,12 +146,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     paddingVertical: hp(3),
-    paddingHorizontal: wp(2),
+    paddingHorizontal: wp(0), // Reduced from wp(2) to wp(0)
   },
   iconContainer: {
-    width: wp(42),
-    height: wp(42),
-    borderRadius: wp(21),
+    width: wp(36), // Reduced from wp(42) to wp(36)
+    height: wp(36), // Reduced from wp(42) to wp(36)
+    borderRadius: wp(18), // Adjusted to match width/2
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: hp(2),
@@ -170,7 +170,7 @@ const styles = StyleSheet.create({
     borderRadius: wp(2),
   },
   tabText: {
-    fontSize: fp(10),
+    fontSize: fp(9), // Reduced from fp(10) to fp(9)
     textAlign: 'center',
     marginTop: hp(1),
   }
