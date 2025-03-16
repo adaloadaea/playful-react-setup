@@ -38,10 +38,24 @@ export default function TabBar() {
   ];
 
   const getActiveStatus = (tabHref: string) => {
-    // Improved logic for determining active tab
-    return pathname === tabHref || 
-      (tabHref === '/(tabs)' && (pathname === '/' || pathname === '/(tabs)/index' || pathname === '/(tabs)')) ||
-      (tabHref !== '/(tabs)' && pathname.startsWith(tabHref));
+    // Simple path matching for better active tab detection
+    if (tabHref === '/(tabs)' && (pathname === '/' || pathname === '/(tabs)' || pathname === '/(tabs)/index')) {
+      return true;
+    }
+    
+    // For other tabs, check if the current path starts with the tab href
+    if (tabHref !== '/(tabs)') {
+      // Special case for messages tab to handle nested routes
+      if (tabHref === '/(tabs)/messages' && 
+         (pathname.startsWith('/(tabs)/messages') || pathname.startsWith('/messages'))) {
+        return true;
+      }
+      
+      // For other tabs
+      return pathname === tabHref || pathname.startsWith(tabHref);
+    }
+    
+    return false;
   };
 
   return (
@@ -61,7 +75,6 @@ export default function TabBar() {
             <TouchableOpacity 
               style={[
                 styles.tab,
-                isActive && styles.activeTab,
                 isActive && { 
                   backgroundColor: `${colors.primary}15`,
                   borderTopColor: colors.primary,
@@ -75,11 +88,11 @@ export default function TabBar() {
               <View 
                 style={[
                   styles.iconContainer, 
-                  isActive && { backgroundColor: `${colors.primary}20` }
+                  isActive && { backgroundColor: `${colors.primary}30` }
                 ]}
               >
                 <tab.icon 
-                  size={wp(24)} 
+                  size={wp(22)} 
                   color={isActive ? colors.primary : colors.secondary} 
                   strokeWidth={isActive ? 2.5 : 2}
                 />
@@ -108,9 +121,9 @@ export default function TabBar() {
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    paddingTop: hp(12),
-    paddingBottom: Platform.OS === 'ios' ? hp(28) : hp(12),
-    paddingHorizontal: wp(8),
+    paddingTop: hp(10),
+    paddingBottom: Platform.OS === 'ios' ? hp(25) : hp(10),
+    paddingHorizontal: wp(4), // Reduced horizontal padding
     justifyContent: 'space-between',
     borderTopWidth: 1,
     ...Platform.select({
@@ -128,21 +141,19 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: hp(6),
+    paddingVertical: hp(4), // Reduced vertical padding
+    paddingHorizontal: wp(2), // Reduced horizontal padding for each tab
     borderTopWidth: 3,
     borderTopColor: 'transparent',
   },
-  activeTab: {
-    borderRadius: wp(10),
-  },
   iconContainer: {
-    padding: wp(8),
-    borderRadius: wp(10),
-    marginBottom: hp(4),
+    padding: wp(6), // Smaller padding for icon container
+    borderRadius: wp(8),
+    marginBottom: hp(2), // Reduced margin
   },
   tabText: {
-    fontSize: fp(12),
+    fontSize: fp(11), // Slightly smaller text
     textAlign: 'center',
-    marginTop: hp(2),
+    marginTop: hp(1), // Reduced margin
   }
 });
