@@ -1,5 +1,6 @@
 
-import { View, TouchableOpacity, Text, StyleSheet, Platform } from 'react-native';
+import React from 'react';
+import { View, TouchableOpacity, Text, StyleSheet, Platform, Animated } from 'react-native';
 import { usePathname, Link } from 'expo-router';
 import { Home, AlertTriangle, MapPin, MessageSquare, Settings } from 'lucide-react-native';
 import { useThemeColors } from '../../hooks/useThemeColors';
@@ -38,20 +39,20 @@ export default function TabBar() {
   ];
 
   const getActiveStatus = (tabHref: string) => {
-    // Simple path matching for better active tab detection
+    // Home tab
     if (tabHref === '/(tabs)' && (pathname === '/' || pathname === '/(tabs)' || pathname === '/(tabs)/index')) {
       return true;
     }
     
-    // For other tabs, check if the current path starts with the tab href
+    // For other tabs
     if (tabHref !== '/(tabs)') {
-      // Special case for messages tab to handle nested routes
+      // Special case for messages tab
       if (tabHref === '/(tabs)/messages' && 
-         (pathname.startsWith('/(tabs)/messages') || pathname.startsWith('/messages'))) {
+          (pathname.startsWith('/(tabs)/messages') || pathname.startsWith('/messages'))) {
         return true;
       }
       
-      // For other tabs
+      // For incidents, map, settings
       return pathname === tabHref || pathname.startsWith(tabHref);
     }
     
@@ -75,11 +76,6 @@ export default function TabBar() {
             <TouchableOpacity 
               style={[
                 styles.tab,
-                isActive && { 
-                  backgroundColor: `${colors.primary}15`,
-                  borderTopColor: colors.primary,
-                  borderTopWidth: 3,
-                }
               ]}
               accessibilityRole="button"
               accessibilityLabel={tab.name}
@@ -88,22 +84,30 @@ export default function TabBar() {
               <View 
                 style={[
                   styles.iconContainer, 
-                  isActive && { backgroundColor: `${colors.primary}30` }
+                  isActive ? styles.activeIconContainer : styles.inactiveIconContainer,
+                  { backgroundColor: isActive ? `${colors.primary}20` : 'transparent' }
                 ]}
               >
                 <tab.icon 
-                  size={wp(22)} 
+                  size={wp(20)} 
                   color={isActive ? colors.primary : colors.secondary} 
                   strokeWidth={isActive ? 2.5 : 2}
                 />
+                {isActive && (
+                  <View 
+                    style={[
+                      styles.activeDot,
+                      { backgroundColor: colors.primary }
+                    ]} 
+                  />
+                )}
               </View>
               <Text 
                 style={[
                   styles.tabText, 
-                  { color: colors.secondary },
-                  isActive && { 
-                    color: colors.primary,
-                    fontWeight: '600',
+                  { 
+                    color: isActive ? colors.primary : colors.secondary,
+                    fontWeight: isActive ? '600' : '400',
                   }
                 ]}
                 numberOfLines={1}
@@ -121,9 +125,9 @@ export default function TabBar() {
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    paddingTop: hp(10),
-    paddingBottom: Platform.OS === 'ios' ? hp(25) : hp(10),
-    paddingHorizontal: wp(4), // Reduced horizontal padding
+    paddingTop: hp(8),
+    paddingBottom: Platform.OS === 'ios' ? hp(25) : hp(8),
+    paddingHorizontal: wp(5),
     justifyContent: 'space-between',
     borderTopWidth: 1,
     ...Platform.select({
@@ -141,19 +145,33 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: hp(4), // Reduced vertical padding
-    paddingHorizontal: wp(2), // Reduced horizontal padding for each tab
-    borderTopWidth: 3,
-    borderTopColor: 'transparent',
+    paddingVertical: hp(3),
+    paddingHorizontal: wp(2),
   },
   iconContainer: {
-    padding: wp(6), // Smaller padding for icon container
-    borderRadius: wp(8),
-    marginBottom: hp(2), // Reduced margin
+    width: wp(42),
+    height: wp(42),
+    borderRadius: wp(21),
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: hp(2),
+  },
+  activeIconContainer: {
+    transform: [{ translateY: hp(-4) }],
+  },
+  inactiveIconContainer: {
+    transform: [{ translateY: 0 }],
+  },
+  activeDot: {
+    position: 'absolute',
+    bottom: -hp(2),
+    width: wp(4),
+    height: wp(4),
+    borderRadius: wp(2),
   },
   tabText: {
-    fontSize: fp(11), // Slightly smaller text
+    fontSize: fp(10),
     textAlign: 'center',
-    marginTop: hp(1), // Reduced margin
+    marginTop: hp(1),
   }
 });
