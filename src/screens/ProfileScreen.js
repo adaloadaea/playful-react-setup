@@ -1,4 +1,3 @@
-
 import React, { useState, useContext } from 'react';
 import {
   StyleSheet,
@@ -55,7 +54,7 @@ export default function ProfileScreen({ navigation }) {
 
   const handleUpdateProfile = async () => {
     if (!firstName && !lastName && !phone) {
-      Alert.alert('Error', 'Please fill at least one field to update.');
+      Alert.alert('Erreur', 'Veuillez remplir au moins un champ à mettre à jour.');
       return;
     }
 
@@ -70,13 +69,13 @@ export default function ProfileScreen({ navigation }) {
       const success = await updateUserProfile(updateData);
       
       if (success) {
-        Alert.alert('Success', 'Profile updated successfully!');
+        Alert.alert('Succès', 'Profil mis à jour avec succès !');
         setProfileModalVisible(false);
       } else {
-        Alert.alert('Error', 'Failed to update profile. Please try again.');
+        Alert.alert('Erreur', 'Échec de la mise à jour du profil. Veuillez réessayer.');
       }
     } catch (error) {
-      Alert.alert('Error', error.message || 'Something went wrong. Please try again.');
+      Alert.alert('Erreur', error.message || 'Une erreur est survenue. Veuillez réessayer.');
     } finally {
       setUpdateLoading(false);
     }
@@ -84,7 +83,7 @@ export default function ProfileScreen({ navigation }) {
 
   const handleUpdateCredentials = async () => {
     if (!email) {
-      Alert.alert('Error', 'Please enter your new email.');
+      Alert.alert('Erreur', 'Veuillez saisir votre nouvelle adresse e-mail.');
       return;
     }
     
@@ -94,13 +93,13 @@ export default function ProfileScreen({ navigation }) {
       const success = await updateUserProfile({ email });
       
       if (success) {
-        Alert.alert('Success', 'Email updated successfully!');
+        Alert.alert('Succès', 'Adresse e-mail mise à jour avec succès !');
         setCredentialsModalVisible(false);
       } else {
-        Alert.alert('Error', 'Failed to update email. Please try again.');
+        Alert.alert('Erreur', 'Échec de la mise à jour de l\'adresse e-mail. Veuillez réessayer.');
       }
     } catch (error) {
-      Alert.alert('Error', error.message || 'Something went wrong. Please try again.');
+      Alert.alert('Erreur', error.message || 'Une erreur est survenue. Veuillez réessayer.');
     } finally {
       setUpdateLoading(false);
     }
@@ -109,22 +108,22 @@ export default function ProfileScreen({ navigation }) {
   const handleUpdatePassword = async () => {
     // Validate password inputs
     if (!currentPassword) {
-      setPasswordError('Please enter your current password');
+      setPasswordError('Veuillez saisir votre mot de passe actuel');
       return;
     }
     
     if (!newPassword) {
-      setPasswordError('Please enter a new password');
+      setPasswordError('Veuillez saisir un nouveau mot de passe');
       return;
     }
     
     if (newPassword !== confirmPassword) {
-      setPasswordError('New passwords do not match');
+      setPasswordError('Les nouveaux mots de passe ne correspondent pas');
       return;
     }
     
     if (newPassword.length < 6) {
-      setPasswordError('Password must be at least 6 characters');
+      setPasswordError('Le mot de passe doit contenir au moins 6 caractères');
       return;
     }
     
@@ -135,16 +134,16 @@ export default function ProfileScreen({ navigation }) {
       const success = await updatePassword(currentPassword, newPassword);
       
       if (success) {
-        Alert.alert('Success', 'Password updated successfully!');
+        Alert.alert('Succès', 'Mot de passe mis à jour avec succès !');
         setCurrentPassword('');
         setNewPassword('');
         setConfirmPassword('');
         setPasswordModalVisible(false);
       } else {
-        setPasswordError('Failed to update password. Please check your current password and try again.');
+        setPasswordError('Échec de la mise à jour du mot de passe. Veuillez vérifier votre mot de passe actuel et réessayer.');
       }
     } catch (error) {
-      setPasswordError(error.message || 'Something went wrong. Please try again.');
+      setPasswordError(error.message || 'Une erreur est survenue. Veuillez réessayer.');
     } finally {
       setUpdateLoading(false);
     }
@@ -175,7 +174,7 @@ export default function ProfileScreen({ navigation }) {
     return (
       <SafeAreaView style={[styles.container, styles.loadingContainer]}>
         <ActivityIndicator size="large" color={COLORS.primary} />
-        <Text style={styles.loadingText}>Loading...</Text>
+        <Text style={styles.loadingText}>Chargement...</Text>
       </SafeAreaView>
     );
   }

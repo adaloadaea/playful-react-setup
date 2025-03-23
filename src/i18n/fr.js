@@ -1,3 +1,4 @@
+
 export default {
   login: {
     welcome: 'Bienvenue sur JenCity',
@@ -109,7 +110,14 @@ export default {
     confirmPassword: 'Confirmer le mot de passe',
     passwordMismatch: 'Les mots de passe ne correspondent pas',
     passwordTooShort: 'Le mot de passe doit contenir au moins 6 caractères',
-    profile: "Profil"
+    profile: "Profil",
+    enterCurrentPassword: "Veuillez saisir votre mot de passe actuel",
+    enterNewPassword: "Veuillez saisir un nouveau mot de passe",
+    updateSuccess: "Profil mis à jour avec succès !",
+    updateError: "Échec de la mise à jour. Veuillez réessayer.",
+    passwordUpdateSuccess: "Mot de passe mis à jour avec succès !",
+    personalInfo: "Informations personnelles",
+    role: "Rôle"
   },
   map: {
     title: 'JenCity',
@@ -140,7 +148,19 @@ export default {
     version: 'Version',
     appVersion: '1.0.0',
     deleteAccount: 'Supprimer mon compte',
-    logout: 'Se déconnecter'
+    logout: 'Se déconnecter',
+    updateProfile: 'Mettre à jour le profil',
+    updateEmail: 'Mettre à jour l\'email',
+    updatePassword: 'Mettre à jour le mot de passe',
+    deleteConfirm: 'Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible.',
+    currentPassword: 'Mot de passe actuel',
+    confirmPassword: 'Confirmer le mot de passe',
+    firstName: 'Prénom',
+    lastName: 'Nom',
+    email: 'Email',
+    phone: 'Téléphone',
+    role: 'Rôle',
+    personalInfo: 'Informations personnelles'
   },
   start: {
     explore: 'Explorer Jendouba',
@@ -163,7 +183,6 @@ export default {
     edit: 'Modifier',
     view: 'Voir',
     close: 'Fermer',
-    back: 'Retour',
     success: 'Succès !',
     failure: 'Échec !',
     confirm: 'Confirmer',

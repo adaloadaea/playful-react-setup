@@ -1,4 +1,3 @@
-
 import React, { useState, useContext, useEffect } from 'react';
 import { 
   View, 
@@ -45,23 +44,19 @@ const SettingsScreen = ({ navigation }) => {
   const [isProfileModalVisible, setProfileModalVisible] = useState(false);
   const [isPasswordModalVisible, setPasswordModalVisible] = useState(false);
   
-  // Profile update state
   const [name, setName] = useState('');
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   
-  // Password update state
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [passwordError, setPasswordError] = useState('');
   
-  // Loading state for updates
   const [updateLoading, setUpdateLoading] = useState(false);
 
-  // Load user data when component mounts or user changes
   useEffect(() => {
     if (user) {
       setFirstName(user.firstName || '');
@@ -74,7 +69,7 @@ const SettingsScreen = ({ navigation }) => {
 
   const handleSaveProfile = async () => {
     if (!firstName && !lastName && !email && !phone) {
-      Alert.alert('Error', 'Please fill at least one field to update.');
+      Alert.alert('Erreur', 'Veuillez remplir au moins un champ à mettre à jour.');
       return;
     }
     
@@ -90,13 +85,13 @@ const SettingsScreen = ({ navigation }) => {
       const success = await updateUserProfile(updateData);
       
       if (success) {
-        Alert.alert('Success', 'Profile updated successfully!');
+        Alert.alert('Succès', 'Profil mis à jour avec succès !');
         setProfileModalVisible(false);
       } else {
-        Alert.alert('Error', 'Failed to update profile. Please try again.');
+        Alert.alert('Erreur', 'Échec de la mise à jour du profil. Veuillez réessayer.');
       }
     } catch (error) {
-      Alert.alert('Error', error.message || 'Something went wrong. Please try again.');
+      Alert.alert('Erreur', error.message || 'Une erreur est survenue. Veuillez réessayer.');
     } finally {
       setUpdateLoading(false);
     }
@@ -104,22 +99,22 @@ const SettingsScreen = ({ navigation }) => {
 
   const handleChangePassword = async () => {
     if (!currentPassword) {
-      setPasswordError(t('settings.enterCurrentPassword') || 'Please enter your current password');
+      setPasswordError(t('settings.enterCurrentPassword') || 'Veuillez saisir votre mot de passe actuel');
       return;
     }
     
     if (!newPassword) {
-      setPasswordError(t('settings.enterNewPassword') || 'Please enter a new password');
+      setPasswordError(t('settings.enterNewPassword') || 'Veuillez saisir un nouveau mot de passe');
       return;
     }
     
     if (newPassword !== confirmPassword) {
-      setPasswordError(t('settings.passwordMismatch') || 'Passwords do not match');
+      setPasswordError(t('settings.passwordMismatch') || 'Les mots de passe ne correspondent pas');
       return;
     }
     
     if (newPassword.length < 6) {
-      setPasswordError(t('settings.passwordTooShort') || 'Password must be at least 6 characters');
+      setPasswordError(t('settings.passwordTooShort') || 'Le mot de passe doit contenir au moins 6 caractères');
       return;
     }
     
@@ -130,16 +125,16 @@ const SettingsScreen = ({ navigation }) => {
       const success = await updatePassword(currentPassword, newPassword);
       
       if (success) {
-        Alert.alert('Success', 'Password updated successfully!');
+        Alert.alert('Succès', 'Mot de passe mis à jour avec succès !');
         setCurrentPassword('');
         setNewPassword('');
         setConfirmPassword('');
         setPasswordModalVisible(false);
       } else {
-        setPasswordError('Failed to update password. Please check your current password and try again.');
+        setPasswordError('Échec de la mise à jour du mot de passe. Veuillez vérifier votre mot de passe actuel et réessayer.');
       }
     } catch (error) {
-      setPasswordError(error.message || 'Something went wrong. Please try again.');
+      setPasswordError(error.message || 'Une erreur est survenue. Veuillez réessayer.');
     } finally {
       setUpdateLoading(false);
     }
@@ -147,12 +142,8 @@ const SettingsScreen = ({ navigation }) => {
 
   const handleLogout = async () => {
     try {
-      // Show loading indicator or disable button if needed
-      
-      // Use the complete logout function from clerk integration
       await logoutFromClerk();
       
-      // Navigate to Login screen
       navigation.reset({
         index: 0,
         routes: [{ name: ROUTES.LOGIN }],
@@ -161,12 +152,11 @@ const SettingsScreen = ({ navigation }) => {
       console.error('Logout error:', error);
       Alert.alert(
         'Logout Error',
-        'An error occurred during logout. Please try again.'
+        'Une erreur est survenue pendant le déconnexion. Veuillez réessayer.'
       );
     }
   };
 
-  // User account section
   const userAccountSection = {
     title: t('settings.account'),
     items: [
@@ -174,7 +164,6 @@ const SettingsScreen = ({ navigation }) => {
         icon: <User size={24} color={COLORS.primary} />,
         title: t('settings.profile'),
         onPress: () => {
-          // Make sure we have the latest user data
           if (user) {
             setFirstName(user.firstName || '');
             setLastName(user.lastName || '');
@@ -298,7 +287,6 @@ const SettingsScreen = ({ navigation }) => {
         </Animatable.View>
       </ScrollView>
 
-      {/* Profile Edit Modal */}
       <Modal
         animationType="slide"
         transparent={true}
@@ -384,7 +372,6 @@ const SettingsScreen = ({ navigation }) => {
         </View>
       </Modal>
 
-      {/* Password Change Modal */}
       <Modal
         animationType="slide"
         transparent={true}
