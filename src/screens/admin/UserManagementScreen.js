@@ -1,5 +1,4 @@
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   StyleSheet, 
   Text, 
@@ -9,44 +8,97 @@ import {
   TouchableOpacity, 
   TextInput,
   StatusBar,
-  Alert
+  Alert,
+  Modal,
+  ActivityIndicator
 } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import { COLORS } from '../../theme/colors';
 import { SPACING } from '../../theme/spacing';
 import { FONT_SIZE } from '../../theme/typography';
 import { boxShadow } from '../../theme/mixins';
+import { API_URL, ENDPOINTS } from '../../config/apiConfig';
 
 export default function UserManagementScreen({ navigation }) {
   const [searchQuery, setSearchQuery] = useState('');
-  const [users, setUsers] = useState([
-    { id: '1', name: 'Marie Dupont', email: 'marie@example.com', status: 'active', role: 'user' },
-    { id: '2', name: 'Thomas Martin', email: 'thomas@example.com', status: 'active', role: 'user' },
-    { id: '3', name: 'Sophie Bernard', email: 'sophie@example.com', status: 'blocked', role: 'user' },
-    { id: '4', name: 'Lucas Petit', email: 'lucas@example.com', status: 'active', role: 'premium' },
-    { id: '5', name: 'Emma Robert', email: 'emma@example.com', status: 'active', role: 'user' },
-    { id: '6', name: 'Antoine Durand', email: 'antoine@example.com', status: 'inactive', role: 'user' },
-    { id: '7', name: 'Julie Leroy', email: 'julie@example.com', status: 'active', role: 'premium' },
-  ]);
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [editedUser, setEditedUser] = useState({
+    firstName: '',
+    lastName: '',
+    phone: '',
+    email: '',
+    status: '',
+    role: '',
+  });
+  
+  // Fetch users when component mounts
+  useEffect(() => {
+    fetchUsers();
+  }, []);
 
-  const filteredUsers = users.filter(user => 
-    user.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-    user.email.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
-  const toggleUserStatus = (id) => {
-    setUsers(
-      users.map(user => {
-        if (user.id === id) {
-          const newStatus = user.status === 'active' ? 'blocked' : 'active';
-          return { ...user, status: newStatus };
-        }
-        return user;
-      })
-    );
+  // Function to fetch all users from API
+  const fetchUsers = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch(`${API_URL}${ENDPOINTS.ALL_USERS}`);
+      
+      if (!response.ok) {
+        throw new Error('Failed to fetch users');
+      }
+      
+      const result = await response.json();
+      setUsers(result.data || []);
+    } catch (error) {
+      console.error('Error fetching users:', error);
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const deleteUser = (id) => {
+  // Function to update user
+  const updateUser = async () => {
+    try {
+      const response = await fetch(`${API_URL}${ENDPOINTS.USER_BY_ID(selectedUser.id)}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          firstName: editedUser.firstName,
+          lastName: editedUser.lastName,
+          phone: editedUser.phone,
+          status: editedUser.status,
+          role: editedUser.role
+        }),
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to update user');
+      }
+      
+      // Update local state with updated user data
+      setUsers(users.map(user => 
+        user.id === selectedUser.id ? { ...user, ...editedUser } : user
+      ));
+      
+      // Close modal
+      setModalVisible(false);
+      
+      // Show success message
+      Alert.alert("Succès", "Utilisateur mis à jour avec succès");
+    } catch (error) {
+      console.error('Error updating user:', error);
+      Alert.alert("Erreur", error.message);
+    }
+  };
+
+  // Function to delete user
+  const deleteUser = async (id) => {
     Alert.alert(
       "Confirmation",
       "Êtes-vous sûr de vouloir supprimer cet utilisateur ?",
@@ -57,8 +109,25 @@ export default function UserManagementScreen({ navigation }) {
         },
         { 
           text: "Supprimer", 
-          onPress: () => {
-            setUsers(users.filter(user => user.id !== id));
+          onPress: async () => {
+            try {
+              const response = await fetch(`${API_URL}${ENDPOINTS.USER_BY_ID(id)}`, {
+                method: 'DELETE',
+              });
+              
+              if (!response.ok) {
+                throw new Error('Failed to delete user');
+              }
+              
+              // Update local state by removing the deleted user
+              setUsers(users.filter(user => user.id !== id));
+              
+              // Show success message
+              Alert.alert("Succès", "Utilisateur supprimé avec succès");
+            } catch (error) {
+              console.error('Error deleting user:', error);
+              Alert.alert("Erreur", error.message);
+            }
           },
           style: "destructive"
         }
@@ -66,14 +135,33 @@ export default function UserManagementScreen({ navigation }) {
     );
   };
 
+  const filteredUsers = users.filter(user => 
+    user.firstName?.toLowerCase().includes(searchQuery.toLowerCase()) || 
+    user.lastName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    user.email?.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const handleEditUser = (user) => {
+    setSelectedUser(user);
+    setEditedUser({
+      firstName: user.firstName || '',
+      lastName: user.lastName || '',
+      phone: user.phone || '',
+      email: user.email || '',
+      status: user.status || '',
+      role: user.role || '',
+    });
+    setModalVisible(true);
+  };
+
   const renderUserItem = ({ item }) => (
     <Animatable.View animation="fadeIn" duration={500} style={styles.userCard}>
       <View style={styles.userInfo}>
         <View style={styles.userAvatar}>
-          <Text style={styles.avatarText}>{item.name.charAt(0)}</Text>
+          <Text style={styles.avatarText}>{item.firstName?.charAt(0) || ''}</Text>
         </View>
         <View style={styles.userDetails}>
-          <Text style={styles.userName}>{item.name}</Text>
+          <Text style={styles.userName}>{`${item.firstName || ''} ${item.lastName || ''}`}</Text>
           <Text style={styles.userEmail}>{item.email}</Text>
           <View style={styles.userMeta}>
             <View style={[
@@ -97,22 +185,8 @@ export default function UserManagementScreen({ navigation }) {
       </View>
       <View style={styles.userActions}>
         <TouchableOpacity 
-          style={[
-            styles.actionButton, 
-            { backgroundColor: item.status === 'active' ? '#FFEBEE' : '#E8F5E9' }
-          ]} 
-          onPress={() => toggleUserStatus(item.id)}
-        >
-          <Text style={[
-            styles.actionButtonText, 
-            { color: item.status === 'active' ? COLORS.error : COLORS.success }
-          ]}>
-            {item.status === 'active' ? 'Bloquer' : 'Activer'}
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity 
           style={[styles.actionButton, { backgroundColor: '#FFF9C4' }]} 
-          onPress={() => Alert.alert("Info", "Cette fonctionnalité serait implémentée dans une vraie application.")}
+          onPress={() => handleEditUser(item)}
         >
           <Text style={[styles.actionButtonText, { color: '#FFA000' }]}>Modifier</Text>
         </TouchableOpacity>
@@ -165,12 +239,143 @@ export default function UserManagementScreen({ navigation }) {
         </View>
       </View>
       
-      <FlatList
-        data={filteredUsers}
-        renderItem={renderUserItem}
-        keyExtractor={item => item.id}
-        contentContainerStyle={styles.listContainer}
-      />
+      {loading ? (
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color={COLORS.primary} />
+          <Text style={styles.loadingText}>Chargement des utilisateurs...</Text>
+        </View>
+      ) : error ? (
+        <View style={styles.errorContainer}>
+          <Text style={styles.errorText}>Erreur: {error}</Text>
+          <TouchableOpacity style={styles.retryButton} onPress={fetchUsers}>
+            <Text style={styles.retryButtonText}>Réessayer</Text>
+          </TouchableOpacity>
+        </View>
+      ) : (
+        <FlatList
+          data={filteredUsers}
+          renderItem={renderUserItem}
+          keyExtractor={item => item.id.toString()}
+          contentContainerStyle={styles.listContainer}
+          ListEmptyComponent={() => (
+            <View style={styles.emptyContainer}>
+              <Text style={styles.emptyText}>Aucun utilisateur trouvé</Text>
+            </View>
+          )}
+        />
+      )}
+      
+      {/* Edit User Modal */}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <Text style={styles.modalTitle}>Modifier l'utilisateur</Text>
+            
+            <View style={styles.formField}>
+              <Text style={styles.fieldLabel}>Prénom</Text>
+              <TextInput
+                style={styles.modalInput}
+                value={editedUser.firstName}
+                onChangeText={(text) => setEditedUser({...editedUser, firstName: text})}
+                placeholder="Prénom"
+              />
+            </View>
+            
+            <View style={styles.formField}>
+              <Text style={styles.fieldLabel}>Nom</Text>
+              <TextInput
+                style={styles.modalInput}
+                value={editedUser.lastName}
+                onChangeText={(text) => setEditedUser({...editedUser, lastName: text})}
+                placeholder="Nom"
+              />
+            </View>
+            
+            <View style={styles.formField}>
+              <Text style={styles.fieldLabel}>Téléphone</Text>
+              <TextInput
+                style={styles.modalInput}
+                value={editedUser.phone}
+                onChangeText={(text) => setEditedUser({...editedUser, phone: text})}
+                placeholder="Téléphone"
+              />
+            </View>
+            
+            <View style={styles.formField}>
+              <Text style={styles.fieldLabel}>Email</Text>
+              <TextInput
+                style={[styles.modalInput, { backgroundColor: '#f0f0f0' }]}
+                value={editedUser.email}
+                editable={false}
+                placeholder="Email"
+              />
+              <Text style={styles.fieldHint}>L'email ne peut pas être modifié</Text>
+            </View>
+            
+            <View style={styles.formField}>
+              <Text style={styles.fieldLabel}>Statut</Text>
+              <View style={styles.radioContainer}>
+                <TouchableOpacity 
+                  style={[styles.radioOption, editedUser.status === 'active' && styles.radioSelected]}
+                  onPress={() => setEditedUser({...editedUser, status: 'active'})}
+                >
+                  <Text style={styles.radioText}>Actif</Text>
+                </TouchableOpacity>
+                <TouchableOpacity 
+                  style={[styles.radioOption, editedUser.status === 'blocked' && styles.radioSelected]}
+                  onPress={() => setEditedUser({...editedUser, status: 'blocked'})}
+                >
+                  <Text style={styles.radioText}>Bloqué</Text>
+                </TouchableOpacity>
+                <TouchableOpacity 
+                  style={[styles.radioOption, editedUser.status === 'inactive' && styles.radioSelected]}
+                  onPress={() => setEditedUser({...editedUser, status: 'inactive'})}
+                >
+                  <Text style={styles.radioText}>Inactif</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+            
+            <View style={styles.formField}>
+              <Text style={styles.fieldLabel}>Rôle</Text>
+              <View style={styles.radioContainer}>
+                <TouchableOpacity 
+                  style={[styles.radioOption, editedUser.role === 'user' && styles.radioSelected]}
+                  onPress={() => setEditedUser({...editedUser, role: 'user'})}
+                >
+                  <Text style={styles.radioText}>Utilisateur</Text>
+                </TouchableOpacity>
+                <TouchableOpacity 
+                  style={[styles.radioOption, editedUser.role === 'premium' && styles.radioSelected]}
+                  onPress={() => setEditedUser({...editedUser, role: 'premium'})}
+                >
+                  <Text style={styles.radioText}>Premium</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+            
+            <View style={styles.modalButtons}>
+              <TouchableOpacity
+                style={[styles.button, styles.cancelButton]}
+                onPress={() => setModalVisible(false)}
+              >
+                <Text style={styles.buttonText}>Annuler</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.button, styles.saveButton]}
+                onPress={updateUser}
+              >
+                <Text style={[styles.buttonText, { color: COLORS.white }]}>Enregistrer</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 }
@@ -317,6 +522,141 @@ const styles = StyleSheet.create({
   },
   actionButtonText: {
     fontSize: FONT_SIZE.xs,
+    fontWeight: 'bold',
+  },
+  
+  // New styles for loading and error states
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: SPACING.xl,
+  },
+  loadingText: {
+    fontSize: FONT_SIZE.md,
+    color: COLORS.gray,
+    marginTop: SPACING.md,
+  },
+  errorContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: SPACING.xl,
+  },
+  errorText: {
+    fontSize: FONT_SIZE.md,
+    color: COLORS.error,
+    marginBottom: SPACING.md,
+    textAlign: 'center',
+  },
+  retryButton: {
+    backgroundColor: COLORS.primary,
+    paddingHorizontal: SPACING.lg,
+    paddingVertical: SPACING.md,
+    borderRadius: 8,
+  },
+  retryButtonText: {
+    color: COLORS.white,
+    fontSize: FONT_SIZE.md,
+    fontWeight: 'bold',
+  },
+  emptyContainer: {
+    padding: SPACING.xl,
+    alignItems: 'center',
+  },
+  emptyText: {
+    fontSize: FONT_SIZE.md,
+    color: COLORS.gray,
+  },
+  
+  // Modal styles
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalView: {
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: SPACING.lg,
+    width: '90%',
+    maxHeight: '80%',
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+  },
+  modalTitle: {
+    fontSize: FONT_SIZE.lg,
+    fontWeight: 'bold',
+    color: COLORS.primary,
+    marginBottom: SPACING.lg,
+    textAlign: 'center',
+  },
+  formField: {
+    marginBottom: SPACING.md,
+  },
+  fieldLabel: {
+    fontSize: FONT_SIZE.sm,
+    fontWeight: 'bold',
+    color: COLORS.gray,
+    marginBottom: SPACING.xs,
+  },
+  fieldHint: {
+    fontSize: FONT_SIZE.xs,
+    color: COLORS.gray,
+    marginTop: 2,
+    fontStyle: 'italic',
+  },
+  modalInput: {
+    borderWidth: 1,
+    borderColor: COLORS.light_gray,
+    borderRadius: 8,
+    padding: SPACING.sm,
+    fontSize: FONT_SIZE.md,
+  },
+  radioContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+  },
+  radioOption: {
+    borderWidth: 1,
+    borderColor: COLORS.light_gray,
+    borderRadius: 8,
+    paddingVertical: SPACING.xs,
+    paddingHorizontal: SPACING.sm,
+    marginRight: SPACING.sm,
+    marginBottom: SPACING.xs,
+  },
+  radioSelected: {
+    backgroundColor: COLORS.primary_light,
+    borderColor: COLORS.primary,
+  },
+  radioText: {
+    fontSize: FONT_SIZE.sm,
+  },
+  modalButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: SPACING.lg,
+  },
+  button: {
+    flex: 1,
+    paddingVertical: SPACING.md,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginHorizontal: SPACING.xs,
+  },
+  cancelButton: {
+    backgroundColor: COLORS.light_gray,
+  },
+  saveButton: {
+    backgroundColor: COLORS.primary,
+  },
+  buttonText: {
+    fontSize: FONT_SIZE.md,
     fontWeight: 'bold',
   },
 });

@@ -1,5 +1,4 @@
-
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   StyleSheet, 
   Text, 
@@ -7,22 +6,60 @@ import {
   SafeAreaView, 
   TouchableOpacity, 
   ScrollView,
-  StatusBar 
+  StatusBar,
+  ActivityIndicator 
 } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import { COLORS } from '../../theme/colors';
 import { SPACING } from '../../theme/spacing';
 import { FONT_SIZE } from '../../theme/typography';
 import { boxShadow } from '../../theme/mixins';
+import { API_URL, ENDPOINTS } from '../../config/apiConfig';
 
 export default function AdminDashboardScreen({ navigation }) {
-  // Mock data for stats
-  const statsData = [
-    { title: 'Utilisateurs', count: 1245, change: '+12%' },
+  // State for stats
+  const [statsData, setStatsData] = useState([
+    { title: 'Utilisateurs', count: 0, change: '0%' },
     { title: 'Lieux', count: 348, change: '+5%' },
     { title: 'Avis', count: 782, change: '+8%' },
     { title: 'Événements', count: 45, change: '+15%' },
-  ];
+  ]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // Fetch users count when component mounts
+  useEffect(() => {
+    fetchUsersCount();
+  }, []);
+
+  const fetchUsersCount = async () => {
+    try {
+      const response = await fetch(`${API_URL}${ENDPOINTS.ALL_USERS}`);
+      
+      if (!response.ok) {
+        throw new Error('Failed to fetch users');
+      }
+      
+      const result = await response.json();
+      const users = result.data || [];
+      
+      // Update users count in statsData
+      setStatsData(prevStats => {
+        const newStats = [...prevStats];
+        newStats[0] = { 
+          ...newStats[0], 
+          count: users.length,
+          change: '+12%' // This would normally be calculated based on previous data
+        };
+        return newStats;
+      });
+    } catch (error) {
+      console.error('Error fetching users count:', error);
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleLogout = () => {
     navigation.navigate('Login');
@@ -55,24 +92,31 @@ export default function AdminDashboardScreen({ navigation }) {
         </Animatable.View>
         
         <View style={styles.statsContainer}>
-          {statsData.map((item, index) => (
-            <Animatable.View 
-              key={index} 
-              animation="zoomIn" 
-              duration={500} 
-              delay={index * 100}
-              style={styles.statCard}
-            >
-              <Text style={styles.statCount}>{item.count}</Text>
-              <Text style={styles.statTitle}>{item.title}</Text>
-              <Text style={[
-                styles.statChange, 
-                { color: item.change.includes('+') ? COLORS.success : COLORS.error }
-              ]}>
-                {item.change}
-              </Text>
-            </Animatable.View>
-          ))}
+          {loading ? (
+            <View style={styles.loadingStats}>
+              <ActivityIndicator size="small" color={COLORS.primary} />
+              <Text style={styles.loadingText}>Chargement des statistiques...</Text>
+            </View>
+          ) : (
+            statsData.map((item, index) => (
+              <Animatable.View 
+                key={index} 
+                animation="zoomIn" 
+                duration={500} 
+                delay={index * 100}
+                style={styles.statCard}
+              >
+                <Text style={styles.statCount}>{item.count}</Text>
+                <Text style={styles.statTitle}>{item.title}</Text>
+                <Text style={[
+                  styles.statChange, 
+                  { color: item.change.includes('+') ? COLORS.success : COLORS.error }
+                ]}>
+                  {item.change}
+                </Text>
+              </Animatable.View>
+            ))
+          )}
         </View>
         
         <View style={styles.menuContainer}>
@@ -88,7 +132,7 @@ export default function AdminDashboardScreen({ navigation }) {
             <View style={styles.menuContent}>
               <Text style={styles.menuTitle}>Gestion Utilisateurs</Text>
               <Text style={styles.menuDescription}>
-                Supervision, blocage et suppression des comptes
+                Supervision, modification et suppression des comptes
               </Text>
             </View>
           </TouchableOpacity>
@@ -235,6 +279,17 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     justifyContent: 'space-between',
     marginBottom: SPACING.xl,
+  },
+  loadingStats: {
+    width: '100%',
+    paddingVertical: SPACING.lg,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  loadingText: {
+    fontSize: FONT_SIZE.sm,
+    color: COLORS.gray,
+    marginTop: SPACING.xs,
   },
   statCard: {
     backgroundColor: COLORS.white,
