@@ -109,6 +109,7 @@ export default {
     confirmPassword: 'Confirmer le mot de passe',
     passwordMismatch: 'Les mots de passe ne correspondent pas',
     passwordTooShort: 'Le mot de passe doit contenir au moins 6 caractères',
+    profile: "Profil"
   },
   map: {
     title: 'JenCity',
@@ -194,6 +195,8 @@ export default {
     share: 'Partager'
   },
   reservation: {
+    title: "Réservations",
+    subtitle: "Gérez vos réservations",
     book: 'Réserver',
     date: 'Date',
     time: 'Heure',
