@@ -31,8 +31,6 @@ export default function UserManagementScreen({ navigation }) {
     lastName: '',
     phone: '',
     email: '',
-    status: '',
-    role: '',
   });
   
   // Fetch users when component mounts
@@ -72,8 +70,6 @@ export default function UserManagementScreen({ navigation }) {
           firstName: editedUser.firstName,
           lastName: editedUser.lastName,
           phone: editedUser.phone,
-          status: editedUser.status,
-          role: editedUser.role
         }),
       });
       
@@ -148,8 +144,6 @@ export default function UserManagementScreen({ navigation }) {
       lastName: user.lastName || '',
       phone: user.phone || '',
       email: user.email || '',
-      status: user.status || '',
-      role: user.role || '',
     });
     setModalVisible(true);
   };
@@ -265,7 +259,7 @@ export default function UserManagementScreen({ navigation }) {
         />
       )}
       
-      {/* Edit User Modal */}
+      {/* Edit User Modal - Removed status and role options */}
       <Modal
         animationType="slide"
         transparent={true}
@@ -315,48 +309,6 @@ export default function UserManagementScreen({ navigation }) {
                 placeholder="Email"
               />
               <Text style={styles.fieldHint}>L'email ne peut pas être modifié</Text>
-            </View>
-            
-            <View style={styles.formField}>
-              <Text style={styles.fieldLabel}>Statut</Text>
-              <View style={styles.radioContainer}>
-                <TouchableOpacity 
-                  style={[styles.radioOption, editedUser.status === 'active' && styles.radioSelected]}
-                  onPress={() => setEditedUser({...editedUser, status: 'active'})}
-                >
-                  <Text style={styles.radioText}>Actif</Text>
-                </TouchableOpacity>
-                <TouchableOpacity 
-                  style={[styles.radioOption, editedUser.status === 'blocked' && styles.radioSelected]}
-                  onPress={() => setEditedUser({...editedUser, status: 'blocked'})}
-                >
-                  <Text style={styles.radioText}>Bloqué</Text>
-                </TouchableOpacity>
-                <TouchableOpacity 
-                  style={[styles.radioOption, editedUser.status === 'inactive' && styles.radioSelected]}
-                  onPress={() => setEditedUser({...editedUser, status: 'inactive'})}
-                >
-                  <Text style={styles.radioText}>Inactif</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-            
-            <View style={styles.formField}>
-              <Text style={styles.fieldLabel}>Rôle</Text>
-              <View style={styles.radioContainer}>
-                <TouchableOpacity 
-                  style={[styles.radioOption, editedUser.role === 'user' && styles.radioSelected]}
-                  onPress={() => setEditedUser({...editedUser, role: 'user'})}
-                >
-                  <Text style={styles.radioText}>Utilisateur</Text>
-                </TouchableOpacity>
-                <TouchableOpacity 
-                  style={[styles.radioOption, editedUser.role === 'premium' && styles.radioSelected]}
-                  onPress={() => setEditedUser({...editedUser, role: 'premium'})}
-                >
-                  <Text style={styles.radioText}>Premium</Text>
-                </TouchableOpacity>
-              </View>
             </View>
             
             <View style={styles.modalButtons}>
