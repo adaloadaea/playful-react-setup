@@ -67,6 +67,8 @@ export const AuthContext = createContext({
   login: async () => {},
   signup: async () => {},
   logout: async () => {},
+  updateUserProfile: async () => {},
+  updatePassword: async () => {},
   loading: true,
   error: null,
 });
@@ -189,6 +191,81 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const updateUserProfile = async (updateData) => {
+    if (!user || !user.id) {
+      setError('User not authenticated');
+      return false;
+    }
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      const response = await fetch(`${API_URL}${ENDPOINTS.USER_BY_ID(user.id)}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updateData),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.message || 'Failed to update profile');
+      }
+
+      const updatedUser = { ...user, ...updateData };
+      await storage.setItem('user', JSON.stringify(updatedUser));
+      setUser(updatedUser);
+
+      return true;
+    } catch (error) {
+      console.error('Profile update error:', error);
+      setError(error.message || 'Failed to update profile. Please try again.');
+      return false;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const updatePassword = async (currentPassword, newPassword) => {
+    if (!user || !user.id) {
+      setError('User not authenticated');
+      return false;
+    }
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      const response = await fetch(`${API_URL}${ENDPOINTS.USER_BY_ID(user.id)}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          currentPassword,
+          password: newPassword
+        }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.message || 'Failed to update password');
+      }
+
+      return true;
+    } catch (error) {
+      console.error('Password update error:', error);
+      setError(error.message || 'Failed to update password. Please try again.');
+      return false;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <AuthContext.Provider 
       value={{ 
@@ -196,7 +273,9 @@ export const AuthProvider = ({ children }) => {
         user, 
         login, 
         signup, 
-        logout, 
+        logout,
+        updateUserProfile,
+        updatePassword,
         loading, 
         error 
       }}

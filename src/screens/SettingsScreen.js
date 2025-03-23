@@ -1,4 +1,5 @@
-import React, { useState, useContext } from 'react';
+
+import React, { useState, useContext, useEffect } from 'react';
 import { 
   View, 
   StyleSheet, 
@@ -9,7 +10,8 @@ import {
   Platform,
   Animated,
   ScrollView,
-  Alert
+  Alert,
+  ActivityIndicator
 } from 'react-native';
 import { FooterNav } from '../components/FooterNav';
 import { COLORS } from '../theme/colors';
@@ -33,27 +35,160 @@ import * as Animatable from 'react-native-animatable';
 import { AuthContext } from '../context/AuthContext';
 import { useClerkIntegration } from '../utils/clerkAuth';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { ROUTES } from '../navigation/navigationConstants';
+
 const SettingsScreen = ({ navigation }) => {
   const { t } = useTranslation();
-  const { logout } = useContext(AuthContext);
+  const { user, logout, loading, error, updateUserProfile, updatePassword } = useContext(AuthContext);
   const { logoutFromClerk } = useClerkIntegration();
   
   const [isProfileModalVisible, setProfileModalVisible] = useState(false);
   const [isPasswordModalVisible, setPasswordModalVisible] = useState(false);
-  const [name, setName] = useState('User Name');
-  const [email, setEmail] = useState('user@example.com');
-  const [phone, setPhone] = useState('+216 XX XXX XXX');
+  
+  // Profile update state
+  const [name, setName] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
+  
+  // Password update state
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [passwordError, setPasswordError] = useState('');
+  
+  // Loading state for updates
+  const [updateLoading, setUpdateLoading] = useState(false);
+
+  // Load user data when component mounts or user changes
+  useEffect(() => {
+    if (user) {
+      setFirstName(user.firstName || '');
+      setLastName(user.lastName || '');
+      setEmail(user.email || '');
+      setPhone(user.phone || '');
+      setName(`${user.firstName || ''} ${user.lastName || ''}`.trim());
+    }
+  }, [user]);
+
+  const handleSaveProfile = async () => {
+    if (!firstName && !lastName && !email && !phone) {
+      Alert.alert('Error', 'Please fill at least one field to update.');
+      return;
+    }
+    
+    setUpdateLoading(true);
+    
+    const updateData = {};
+    if (firstName) updateData.firstName = firstName;
+    if (lastName) updateData.lastName = lastName;
+    if (email) updateData.email = email;
+    if (phone) updateData.phone = phone;
+
+    try {
+      const success = await updateUserProfile(updateData);
+      
+      if (success) {
+        Alert.alert('Success', 'Profile updated successfully!');
+        setProfileModalVisible(false);
+      } else {
+        Alert.alert('Error', 'Failed to update profile. Please try again.');
+      }
+    } catch (error) {
+      Alert.alert('Error', error.message || 'Something went wrong. Please try again.');
+    } finally {
+      setUpdateLoading(false);
+    }
+  };
+
+  const handleChangePassword = async () => {
+    if (!currentPassword) {
+      setPasswordError(t('settings.enterCurrentPassword') || 'Please enter your current password');
+      return;
+    }
+    
+    if (!newPassword) {
+      setPasswordError(t('settings.enterNewPassword') || 'Please enter a new password');
+      return;
+    }
+    
+    if (newPassword !== confirmPassword) {
+      setPasswordError(t('settings.passwordMismatch') || 'Passwords do not match');
+      return;
+    }
+    
+    if (newPassword.length < 6) {
+      setPasswordError(t('settings.passwordTooShort') || 'Password must be at least 6 characters');
+      return;
+    }
+    
+    setUpdateLoading(true);
+    setPasswordError('');
+    
+    try {
+      const success = await updatePassword(currentPassword, newPassword);
+      
+      if (success) {
+        Alert.alert('Success', 'Password updated successfully!');
+        setCurrentPassword('');
+        setNewPassword('');
+        setConfirmPassword('');
+        setPasswordModalVisible(false);
+      } else {
+        setPasswordError('Failed to update password. Please check your current password and try again.');
+      }
+    } catch (error) {
+      setPasswordError(error.message || 'Something went wrong. Please try again.');
+    } finally {
+      setUpdateLoading(false);
+    }
+  };
+
+  const handleLogout = async () => {
+    try {
+      // Show loading indicator or disable button if needed
+      
+      // Use the complete logout function from clerk integration
+      await logoutFromClerk();
+      
+      // Navigate to Login screen
+      navigation.reset({
+        index: 0,
+        routes: [{ name: ROUTES.LOGIN }],
+      });
+    } catch (error) {
+      console.error('Logout error:', error);
+      Alert.alert(
+        'Logout Error',
+        'An error occurred during logout. Please try again.'
+      );
+    }
+  };
+
+  // User account section
+  const userAccountSection = {
+    title: t('settings.account'),
+    items: [
+      {
+        icon: <User size={24} color={COLORS.primary} />,
+        title: t('settings.profile'),
+        onPress: () => {
+          // Make sure we have the latest user data
+          if (user) {
+            setFirstName(user.firstName || '');
+            setLastName(user.lastName || '');
+            setEmail(user.email || '');
+            setPhone(user.phone || '');
+          }
+          setProfileModalVisible(true);
+        },
+      },
+    ],
+  };
 
   const settingsSections = [
-    {
-      title: t('settings.account'),
-      icon: <User size={24} color={COLORS.primary} />,
-      onPress: () => setProfileModalVisible(true),
-    },
+    userAccountSection,
     {
       title: t('settings.preferences'),
       items: [
@@ -74,7 +209,13 @@ const SettingsScreen = ({ navigation }) => {
         {
           icon: <Key size={24} color={COLORS.primary} />,
           title: t('settings.changePassword'),
-          onPress: () => setPasswordModalVisible(true),
+          onPress: () => {
+            setCurrentPassword('');
+            setNewPassword('');
+            setConfirmPassword('');
+            setPasswordError('');
+            setPasswordModalVisible(true);
+          },
         },
       ],
     },
@@ -89,47 +230,14 @@ const SettingsScreen = ({ navigation }) => {
     },
   ];
 
-  const handleChangePassword = () => {
-    if (newPassword !== confirmPassword) {
-      setPasswordError(t('settings.passwordMismatch') || 'Passwords do not match');
-      return;
-    }
-    
-    if (newPassword.length < 6) {
-      setPasswordError(t('settings.passwordTooShort') || 'Password must be at least 6 characters');
-      return;
-    }
-    
-    // Here you would typically make an API call to change the password
-    
-    // Reset fields and close modal
-    setCurrentPassword('');
-    setNewPassword('');
-    setConfirmPassword('');
-    setPasswordError('');
-    setPasswordModalVisible(false);
-  };
-
-  const handleLogout = async () => {
-    try {
-      // Show loading indicator or disable button if needed
-      
-      // Use the complete logout function from clerk integration
-      await logoutFromClerk();
-      
-      // Navigate to Login screen
-      navigation.reset({
-        index: 0,
-        routes: [{ name: 'Login' }],
-      });
-    } catch (error) {
-      console.error('Logout error:', error);
-      Alert.alert(
-        'Logout Error',
-        'An error occurred during logout. Please try again.'
-      );
-    }
-  };
+  if (loading) {
+    return (
+      <SafeAreaView style={[styles.container, styles.loadingContainer]}>
+        <ActivityIndicator size="large" color={COLORS.primary} />
+        <Text style={styles.loadingText}>{t('common.loading')}</Text>
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -139,7 +247,9 @@ const SettingsScreen = ({ navigation }) => {
         style={styles.header}
       >
         <Text style={styles.title}>{t('settings.title')}</Text>
-        <Text style={styles.subtitle}>{t('settings.subtitle')}</Text>
+        <Text style={styles.subtitle}>
+          {user ? `${user.firstName} ${user.lastName}` : t('settings.subtitle')}
+        </Text>
       </Animatable.View>
 
       <ScrollView style={styles.content} contentContainerStyle={styles.scrollContent}>
@@ -151,36 +261,23 @@ const SettingsScreen = ({ navigation }) => {
             style={styles.section}
           >
             <Text style={styles.sectionTitle}>{section.title}</Text>
-            {section.onPress ? (
-              <TouchableOpacity
+            {section.items?.map((item, index) => (
+              <TouchableOpacity 
+                key={index} 
                 style={styles.settingItem}
-                onPress={section.onPress}
+                onPress={item.onPress}
               >
                 <View style={styles.settingLeft}>
-                  {section.icon}
-                  <Text style={styles.settingText}>{section.title}</Text>
+                  {item.icon}
+                  <Text style={styles.settingText}>{item.title}</Text>
                 </View>
-                <ChevronRight size={20} color={COLORS.gray} />
+                {item.value ? (
+                  <Text style={styles.settingValue}>{item.value}</Text>
+                ) : (
+                  <ChevronRight size={20} color={COLORS.gray} />
+                )}
               </TouchableOpacity>
-            ) : (
-              section.items?.map((item, index) => (
-                <TouchableOpacity 
-                  key={index} 
-                  style={styles.settingItem}
-                  onPress={item.onPress}
-                >
-                  <View style={styles.settingLeft}>
-                    {item.icon}
-                    <Text style={styles.settingText}>{item.title}</Text>
-                  </View>
-                  {item.value ? (
-                    <Text style={styles.settingValue}>{item.value}</Text>
-                  ) : (
-                    <ChevronRight size={20} color={COLORS.gray} />
-                  )}
-                </TouchableOpacity>
-              ))
-            )}
+            ))}
           </Animatable.View>
         ))}
 
@@ -224,8 +321,18 @@ const SettingsScreen = ({ navigation }) => {
               <TextInput 
                 style={styles.input}
                 placeholder={t('signup.firstName')}
-                value={name}
-                onChangeText={setName}
+                value={firstName}
+                onChangeText={setFirstName}
+              />
+            </View>
+
+            <View style={styles.inputContainer}>
+              <User size={20} color={COLORS.gray} />
+              <TextInput 
+                style={styles.input}
+                placeholder={t('signup.lastName')}
+                value={lastName}
+                onChangeText={setLastName}
               />
             </View>
 
@@ -256,15 +363,21 @@ const SettingsScreen = ({ navigation }) => {
               <TouchableOpacity 
                 style={[styles.modalButton, styles.cancelButton]}
                 onPress={() => setProfileModalVisible(false)}
+                disabled={updateLoading}
               >
                 <Text style={styles.cancelButtonText}>{t('settings.cancel')}</Text>
               </TouchableOpacity>
 
               <TouchableOpacity 
                 style={[styles.modalButton, styles.saveButton]}
-                onPress={() => setProfileModalVisible(false)}
+                onPress={handleSaveProfile}
+                disabled={updateLoading}
               >
-                <Text style={styles.saveButtonText}>{t('settings.save')}</Text>
+                {updateLoading ? (
+                  <ActivityIndicator size="small" color={COLORS.white} />
+                ) : (
+                  <Text style={styles.saveButtonText}>{t('settings.save')}</Text>
+                )}
               </TouchableOpacity>
             </View>
           </Animatable.View>
@@ -336,6 +449,7 @@ const SettingsScreen = ({ navigation }) => {
                   setNewPassword('');
                   setConfirmPassword('');
                 }}
+                disabled={updateLoading}
               >
                 <Text style={styles.cancelButtonText}>{t('settings.cancel')}</Text>
               </TouchableOpacity>
@@ -343,8 +457,13 @@ const SettingsScreen = ({ navigation }) => {
               <TouchableOpacity 
                 style={[styles.modalButton, styles.saveButton]}
                 onPress={handleChangePassword}
+                disabled={updateLoading}
               >
-                <Text style={styles.saveButtonText}>{t('settings.save')}</Text>
+                {updateLoading ? (
+                  <ActivityIndicator size="small" color={COLORS.white} />
+                ) : (
+                  <Text style={styles.saveButtonText}>{t('settings.save')}</Text>
+                )}
               </TouchableOpacity>
             </View>
           </Animatable.View>
@@ -360,6 +479,15 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: COLORS.white,
+  },
+  loadingContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingText: {
+    marginTop: SPACING.md,
+    fontSize: FONT_SIZE.md,
+    color: COLORS.gray,
   },
   header: {
     backgroundColor: COLORS.primary,

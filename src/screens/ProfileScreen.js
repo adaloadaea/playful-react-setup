@@ -11,7 +11,8 @@ import {
   ScrollView,
   Platform,
   Image,
-  Alert
+  Alert,
+  ActivityIndicator
 } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import { COLORS } from '../theme/colors';
@@ -19,23 +20,134 @@ import { SPACING } from '../theme/spacing';
 import { FONT_SIZE } from '../theme/typography';
 import { boxShadow } from '../theme/mixins';
 import { useTranslation } from 'react-i18next';
-import { User, Mail, Lock, Trash2, LogOut } from 'lucide-react-native';
+import { User, Mail, Lock, Trash2, LogOut, Phone, UserCircle } from 'lucide-react-native';
 import { AuthContext } from '../context/AuthContext';
 import { useClerkIntegration } from '../utils/clerkAuth';
 import { ROUTES } from '../navigation/navigationConstants';
 
 export default function ProfileScreen({ navigation }) {
-  const [modalVisible, setModalVisible] = useState(false);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  // Get the user data and update functions from AuthContext
   const { t } = useTranslation();
-  const { logout } = useContext(AuthContext);
+  const { user, loading, error, logout, updateUserProfile, updatePassword } = useContext(AuthContext);
   const { logoutFromClerk } = useClerkIntegration();
 
-  const handleUpdateCredentials = () => {
-    // TODO: Implement update logic
-    console.log('Update credentials:', { email, password });
-    setModalVisible(false);
+  // State for handling modals and form inputs
+  const [credentialsModalVisible, setCredentialsModalVisible] = useState(false);
+  const [passwordModalVisible, setPasswordModalVisible] = useState(false);
+  const [profileModalVisible, setProfileModalVisible] = useState(false);
+  
+  // Email update state
+  const [email, setEmail] = useState('');
+  
+  // Password update state
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+  
+  // Profile update state
+  const [firstName, setFirstName] = useState(user?.firstName || '');
+  const [lastName, setLastName] = useState(user?.lastName || '');
+  const [phone, setPhone] = useState(user?.phone || '');
+  
+  // State for local loading indicators
+  const [updateLoading, setUpdateLoading] = useState(false);
+
+  const handleUpdateProfile = async () => {
+    if (!firstName && !lastName && !phone) {
+      Alert.alert('Error', 'Please fill at least one field to update.');
+      return;
+    }
+
+    setUpdateLoading(true);
+    
+    const updateData = {};
+    if (firstName) updateData.firstName = firstName;
+    if (lastName) updateData.lastName = lastName;
+    if (phone) updateData.phone = phone;
+
+    try {
+      const success = await updateUserProfile(updateData);
+      
+      if (success) {
+        Alert.alert('Success', 'Profile updated successfully!');
+        setProfileModalVisible(false);
+      } else {
+        Alert.alert('Error', 'Failed to update profile. Please try again.');
+      }
+    } catch (error) {
+      Alert.alert('Error', error.message || 'Something went wrong. Please try again.');
+    } finally {
+      setUpdateLoading(false);
+    }
+  };
+
+  const handleUpdateCredentials = async () => {
+    if (!email) {
+      Alert.alert('Error', 'Please enter your new email.');
+      return;
+    }
+    
+    setUpdateLoading(true);
+    
+    try {
+      const success = await updateUserProfile({ email });
+      
+      if (success) {
+        Alert.alert('Success', 'Email updated successfully!');
+        setCredentialsModalVisible(false);
+      } else {
+        Alert.alert('Error', 'Failed to update email. Please try again.');
+      }
+    } catch (error) {
+      Alert.alert('Error', error.message || 'Something went wrong. Please try again.');
+    } finally {
+      setUpdateLoading(false);
+    }
+  };
+
+  const handleUpdatePassword = async () => {
+    // Validate password inputs
+    if (!currentPassword) {
+      setPasswordError('Please enter your current password');
+      return;
+    }
+    
+    if (!newPassword) {
+      setPasswordError('Please enter a new password');
+      return;
+    }
+    
+    if (newPassword !== confirmPassword) {
+      setPasswordError('New passwords do not match');
+      return;
+    }
+    
+    if (newPassword.length < 6) {
+      setPasswordError('Password must be at least 6 characters');
+      return;
+    }
+    
+    setUpdateLoading(true);
+    setPasswordError('');
+    
+    try {
+      const success = await updatePassword(currentPassword, newPassword);
+      
+      if (success) {
+        Alert.alert('Success', 'Password updated successfully!');
+        setCurrentPassword('');
+        setNewPassword('');
+        setConfirmPassword('');
+        setPasswordModalVisible(false);
+      } else {
+        setPasswordError('Failed to update password. Please check your current password and try again.');
+      }
+    } catch (error) {
+      setPasswordError(error.message || 'Something went wrong. Please try again.');
+    } finally {
+      setUpdateLoading(false);
+    }
   };
 
   const handleLogout = async () => {
@@ -59,6 +171,15 @@ export default function ProfileScreen({ navigation }) {
     }
   };
 
+  if (loading) {
+    return (
+      <SafeAreaView style={[styles.container, styles.loadingContainer]}>
+        <ActivityIndicator size="large" color={COLORS.primary} />
+        <Text style={styles.loadingText}>Loading...</Text>
+      </SafeAreaView>
+    );
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
@@ -69,11 +190,13 @@ export default function ProfileScreen({ navigation }) {
         >
           <View style={styles.profileImageContainer}>
             <View style={styles.profileImageWrapper}>
-              <User size={40} color={COLORS.white} />
+              <UserCircle size={40} color={COLORS.white} />
             </View>
           </View>
           <Text style={styles.title}>{t('profile.title')}</Text>
-          <Text style={styles.subtitle}>{t('profile.subtitle')}</Text>
+          <Text style={styles.subtitle}>
+            {user ? `${user.firstName} ${user.lastName}` : t('profile.subtitle')}
+          </Text>
         </Animatable.View>
 
         <Animatable.View 
@@ -83,18 +206,65 @@ export default function ProfileScreen({ navigation }) {
           style={styles.content}
         >
           <View style={styles.card}>
-            <Text style={styles.aboutText}>
-              {t('profile.about')}
-            </Text>
+            <Text style={styles.cardTitle}>{t('profile.personalInfo')}</Text>
+            <View style={styles.infoRow}>
+              <Mail size={18} color={COLORS.gray} />
+              <Text style={styles.infoLabel}>{t('profile.email')}:</Text>
+              <Text style={styles.infoValue}>{user?.email || 'Not available'}</Text>
+            </View>
+            <View style={styles.infoRow}>
+              <Phone size={18} color={COLORS.gray} />
+              <Text style={styles.infoLabel}>{t('profile.phone')}:</Text>
+              <Text style={styles.infoValue}>{user?.phone || 'Not available'}</Text>
+            </View>
+            <View style={styles.infoRow}>
+              <User size={18} color={COLORS.gray} />
+              <Text style={styles.infoLabel}>{t('profile.role')}:</Text>
+              <Text style={styles.infoValue}>{user?.role || 'User'}</Text>
+            </View>
           </View>
 
           <TouchableOpacity 
             style={styles.updateButton}
-            onPress={() => setModalVisible(true)}
+            onPress={() => {
+              setFirstName(user?.firstName || '');
+              setLastName(user?.lastName || '');
+              setPhone(user?.phone || '');
+              setProfileModalVisible(true);
+            }}
+          >
+            <User size={20} color={COLORS.white} />
+            <Text style={styles.updateButtonText}>
+              {t('profile.updateProfile')}
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity 
+            style={styles.updateButton}
+            onPress={() => {
+              setEmail(user?.email || '');
+              setCredentialsModalVisible(true);
+            }}
           >
             <Mail size={20} color={COLORS.white} />
             <Text style={styles.updateButtonText}>
-              {t('profile.updateCredentials')}
+              {t('profile.updateEmail')}
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity 
+            style={styles.updateButton}
+            onPress={() => {
+              setCurrentPassword('');
+              setNewPassword('');
+              setConfirmPassword('');
+              setPasswordError('');
+              setPasswordModalVisible(true);
+            }}
+          >
+            <Lock size={20} color={COLORS.white} />
+            <Text style={styles.updateButtonText}>
+              {t('profile.updatePassword')}
             </Text>
           </TouchableOpacity>
 
@@ -105,7 +275,16 @@ export default function ProfileScreen({ navigation }) {
 
           <TouchableOpacity 
             style={styles.deleteButton}
-            onPress={() => {}}
+            onPress={() => {
+              Alert.alert(
+                t('profile.deleteAccount'),
+                t('profile.deleteConfirm'),
+                [
+                  { text: t('profile.cancel'), style: 'cancel' },
+                  { text: t('profile.confirm'), style: 'destructive', onPress: () => {} }
+                ]
+              );
+            }}
           >
             <Trash2 size={20} color={COLORS.error} />
             <Text style={styles.deleteButtonText}>
@@ -124,16 +303,86 @@ export default function ProfileScreen({ navigation }) {
           </TouchableOpacity>
         </Animatable.View>
 
+        {/* Profile Update Modal */}
         <Modal
           animationType="slide"
           transparent={true}
-          visible={modalVisible}
-          onRequestClose={() => setModalVisible(false)}
+          visible={profileModalVisible}
+          onRequestClose={() => setProfileModalVisible(false)}
         >
           <View style={styles.modalOverlay}>
             <View style={styles.modalContent}>
               <Text style={styles.modalTitle}>
-                {t('profile.updateInfo')}
+                {t('profile.updateProfile')}
+              </Text>
+
+              <View style={styles.inputContainer}>
+                <User size={20} color={COLORS.gray} style={styles.inputIcon} />
+                <TextInput
+                  style={styles.input}
+                  placeholder={t('profile.firstName')}
+                  value={firstName}
+                  onChangeText={setFirstName}
+                />
+              </View>
+
+              <View style={styles.inputContainer}>
+                <User size={20} color={COLORS.gray} style={styles.inputIcon} />
+                <TextInput
+                  style={styles.input}
+                  placeholder={t('profile.lastName')}
+                  value={lastName}
+                  onChangeText={setLastName}
+                />
+              </View>
+
+              <View style={styles.inputContainer}>
+                <Phone size={20} color={COLORS.gray} style={styles.inputIcon} />
+                <TextInput
+                  style={styles.input}
+                  placeholder={t('profile.phone')}
+                  value={phone}
+                  onChangeText={setPhone}
+                  keyboardType="phone-pad"
+                />
+              </View>
+
+              <View style={styles.modalButtons}>
+                <TouchableOpacity 
+                  style={[styles.modalButton, styles.cancelButton]}
+                  onPress={() => setProfileModalVisible(false)}
+                  disabled={updateLoading}
+                >
+                  <Text style={styles.cancelButtonText}>{t('profile.cancel')}</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity 
+                  style={[styles.modalButton, styles.confirmButton]}
+                  onPress={handleUpdateProfile}
+                  disabled={updateLoading}
+                >
+                  {updateLoading ? (
+                    <ActivityIndicator size="small" color={COLORS.white} />
+                  ) : (
+                    <Text style={styles.confirmButtonText}>{t('profile.confirm')}</Text>
+                  )}
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </Modal>
+
+        {/* Email Update Modal */}
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={credentialsModalVisible}
+          onRequestClose={() => setCredentialsModalVisible(false)}
+        >
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalContent}>
+              <Text style={styles.modalTitle}>
+                {t('profile.updateEmail')}
               </Text>
 
               <View style={styles.inputContainer}>
@@ -148,21 +397,11 @@ export default function ProfileScreen({ navigation }) {
                 />
               </View>
 
-              <View style={styles.inputContainer}>
-                <Lock size={20} color={COLORS.gray} style={styles.inputIcon} />
-                <TextInput
-                  style={styles.input}
-                  placeholder={t('profile.newPassword')}
-                  value={password}
-                  onChangeText={setPassword}
-                  secureTextEntry
-                />
-              </View>
-
               <View style={styles.modalButtons}>
                 <TouchableOpacity 
                   style={[styles.modalButton, styles.cancelButton]}
-                  onPress={() => setModalVisible(false)}
+                  onPress={() => setCredentialsModalVisible(false)}
+                  disabled={updateLoading}
                 >
                   <Text style={styles.cancelButtonText}>{t('profile.cancel')}</Text>
                 </TouchableOpacity>
@@ -170,8 +409,88 @@ export default function ProfileScreen({ navigation }) {
                 <TouchableOpacity 
                   style={[styles.modalButton, styles.confirmButton]}
                   onPress={handleUpdateCredentials}
+                  disabled={updateLoading}
                 >
-                  <Text style={styles.confirmButtonText}>{t('profile.confirm')}</Text>
+                  {updateLoading ? (
+                    <ActivityIndicator size="small" color={COLORS.white} />
+                  ) : (
+                    <Text style={styles.confirmButtonText}>{t('profile.confirm')}</Text>
+                  )}
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </Modal>
+
+        {/* Password Update Modal */}
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={passwordModalVisible}
+          onRequestClose={() => setPasswordModalVisible(false)}
+        >
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalContent}>
+              <Text style={styles.modalTitle}>
+                {t('profile.updatePassword')}
+              </Text>
+
+              <View style={styles.inputContainer}>
+                <Lock size={20} color={COLORS.gray} style={styles.inputIcon} />
+                <TextInput
+                  style={styles.input}
+                  placeholder={t('profile.currentPassword')}
+                  value={currentPassword}
+                  onChangeText={setCurrentPassword}
+                  secureTextEntry
+                />
+              </View>
+
+              <View style={styles.inputContainer}>
+                <Lock size={20} color={COLORS.gray} style={styles.inputIcon} />
+                <TextInput
+                  style={styles.input}
+                  placeholder={t('profile.newPassword')}
+                  value={newPassword}
+                  onChangeText={setNewPassword}
+                  secureTextEntry
+                />
+              </View>
+
+              <View style={styles.inputContainer}>
+                <Lock size={20} color={COLORS.gray} style={styles.inputIcon} />
+                <TextInput
+                  style={styles.input}
+                  placeholder={t('profile.confirmPassword')}
+                  value={confirmPassword}
+                  onChangeText={setConfirmPassword}
+                  secureTextEntry
+                />
+              </View>
+
+              {passwordError ? (
+                <Text style={styles.errorText}>{passwordError}</Text>
+              ) : null}
+
+              <View style={styles.modalButtons}>
+                <TouchableOpacity 
+                  style={[styles.modalButton, styles.cancelButton]}
+                  onPress={() => setPasswordModalVisible(false)}
+                  disabled={updateLoading}
+                >
+                  <Text style={styles.cancelButtonText}>{t('profile.cancel')}</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity 
+                  style={[styles.modalButton, styles.confirmButton]}
+                  onPress={handleUpdatePassword}
+                  disabled={updateLoading}
+                >
+                  {updateLoading ? (
+                    <ActivityIndicator size="small" color={COLORS.white} />
+                  ) : (
+                    <Text style={styles.confirmButtonText}>{t('profile.confirm')}</Text>
+                  )}
                 </TouchableOpacity>
               </View>
             </View>
@@ -186,6 +505,15 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: COLORS.white,
+  },
+  loadingContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingText: {
+    marginTop: SPACING.md,
+    fontSize: FONT_SIZE.md,
+    color: COLORS.gray,
   },
   scrollContainer: {
     flexGrow: 1,
@@ -233,6 +561,28 @@ const styles = StyleSheet.create({
     marginBottom: SPACING.lg,
     ...boxShadow,
   },
+  cardTitle: {
+    fontSize: FONT_SIZE.lg,
+    fontWeight: 'bold',
+    color: COLORS.primary,
+    marginBottom: SPACING.md,
+  },
+  infoRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: SPACING.sm,
+  },
+  infoLabel: {
+    fontSize: FONT_SIZE.md,
+    color: COLORS.gray,
+    marginLeft: SPACING.sm,
+    width: 80,
+  },
+  infoValue: {
+    fontSize: FONT_SIZE.md,
+    color: COLORS.black,
+    flex: 1,
+  },
   aboutText: {
     fontSize: FONT_SIZE.md,
     color: COLORS.black,
@@ -246,7 +596,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: SPACING.xl,
+    marginBottom: SPACING.md,
     ...boxShadow,
   },
   updateButtonText: {
@@ -258,7 +608,8 @@ const styles = StyleSheet.create({
   versionContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: SPACING.xl,
+    marginTop: SPACING.lg,
+    marginBottom: SPACING.lg,
     paddingHorizontal: SPACING.sm,
   },
   versionLabel: {
@@ -290,6 +641,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: 'auto',
+    marginBottom: SPACING.lg,
   },
   logoutButtonText: {
     color: COLORS.white,
@@ -335,6 +687,12 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: SPACING.md,
     fontSize: FONT_SIZE.md,
+  },
+  errorText: {
+    color: COLORS.error,
+    fontSize: FONT_SIZE.sm,
+    marginBottom: SPACING.md,
+    textAlign: 'center',
   },
   modalButtons: {
     flexDirection: 'row',

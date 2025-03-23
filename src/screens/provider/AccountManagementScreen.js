@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { 
   StyleSheet, 
   Text, 
@@ -10,6 +10,8 @@ import {
   TextInput,
   Platform,
   Image,
+  Alert,
+  ActivityIndicator
 } from 'react-native';
 import { 
   User, 
@@ -23,16 +25,71 @@ import { COLORS } from '../../theme/colors';
 import { SPACING } from '../../theme/spacing';
 import { FONT_SIZE } from '../../theme/typography';
 import * as Animatable from 'react-native-animatable';
+import { AuthContext } from '../../context/AuthContext';
 
 const AccountManagementScreen = ({ navigation }) => {
+  const { user, updateUserProfile, loading, error } = useContext(AuthContext);
+  const [updateLoading, setUpdateLoading] = useState(false);
+
   const [profileData, setProfileData] = useState({
-    name: 'Prestataire Exemple',
-    email: 'prestataire@jencity.com',
-    phone: '+216 22 333 444',
-    address: 'Rue Principale, Jendouba',
+    name: '',
+    firstName: '',
+    lastName: '',
+    email: '',
+    phone: '',
+    address: '',
     description: 'Service de restauration traditionnelle tunisienne avec spécialités locales de Jendouba.',
     openingHours: '9:00 - 22:00'
   });
+
+  // Load user data when component mounts
+  useEffect(() => {
+    if (user) {
+      setProfileData({
+        ...profileData,
+        firstName: user.firstName || '',
+        lastName: user.lastName || '',
+        name: `${user.firstName || ''} ${user.lastName || ''}`.trim(),
+        email: user.email || '',
+        phone: user.phone || '',
+      });
+    }
+  }, [user]);
+
+  const handleSave = async () => {
+    // Prepare data for update
+    const updateData = {
+      firstName: profileData.firstName,
+      lastName: profileData.lastName,
+      phone: profileData.phone,
+      // We'll use address and other fields later if API supports them
+    };
+
+    setUpdateLoading(true);
+
+    try {
+      const success = await updateUserProfile(updateData);
+      
+      if (success) {
+        Alert.alert('Succès', 'Vos informations ont été mises à jour avec succès.');
+      } else {
+        Alert.alert('Erreur', 'La mise à jour de vos informations a échoué. Veuillez réessayer.');
+      }
+    } catch (error) {
+      Alert.alert('Erreur', error.message || 'Une erreur est survenue. Veuillez réessayer.');
+    } finally {
+      setUpdateLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <SafeAreaView style={[styles.container, styles.loadingContainer]}>
+        <ActivityIndicator size="large" color={COLORS.primary} />
+        <Text style={styles.loadingText}>Chargement...</Text>
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -74,9 +131,19 @@ const AccountManagementScreen = ({ navigation }) => {
             <User size={20} color={COLORS.primary} />
             <TextInput 
               style={styles.input}
-              placeholder="Nom complet"
-              value={profileData.name}
-              onChangeText={(text) => setProfileData({...profileData, name: text})}
+              placeholder="Prénom"
+              value={profileData.firstName}
+              onChangeText={(text) => setProfileData({...profileData, firstName: text})}
+            />
+          </View>
+
+          <View style={styles.inputContainer}>
+            <User size={20} color={COLORS.primary} />
+            <TextInput 
+              style={styles.input}
+              placeholder="Nom"
+              value={profileData.lastName}
+              onChangeText={(text) => setProfileData({...profileData, lastName: text})}
             />
           </View>
 
@@ -88,6 +155,7 @@ const AccountManagementScreen = ({ navigation }) => {
               keyboardType="email-address"
               value={profileData.email}
               onChangeText={(text) => setProfileData({...profileData, email: text})}
+              editable={false} // Email usually shouldn't be changed directly
             />
           </View>
 
@@ -135,8 +203,16 @@ const AccountManagementScreen = ({ navigation }) => {
           animation="fadeInUp" 
           delay={600}
         >
-          <TouchableOpacity style={styles.saveButton}>
-            <Text style={styles.saveButtonText}>Enregistrer les modifications</Text>
+          <TouchableOpacity 
+            style={styles.saveButton}
+            onPress={handleSave}
+            disabled={updateLoading}
+          >
+            {updateLoading ? (
+              <ActivityIndicator size="small" color={COLORS.white} />
+            ) : (
+              <Text style={styles.saveButtonText}>Enregistrer les modifications</Text>
+            )}
           </TouchableOpacity>
         </Animatable.View>
       </ScrollView>
@@ -148,6 +224,15 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: COLORS.white,
+  },
+  loadingContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingText: {
+    marginTop: SPACING.md,
+    fontSize: FONT_SIZE.md,
+    color: COLORS.gray,
   },
   header: {
     backgroundColor: COLORS.primary,
@@ -240,8 +325,10 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: SPACING.md,
     alignItems: 'center',
+    justifyContent: 'center',
     marginTop: SPACING.lg,
     marginBottom: SPACING.xl,
+    height: 50,
   },
   saveButtonText: {
     color: COLORS.white,
