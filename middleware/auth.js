@@ -1,12 +1,12 @@
 
-const isAuthenticated = (req, res, next) => {
+const protect = (req, res, next) => {
   // No authentication check - always allow access
   next();
 };
 
-const isAdmin = (req, res, next) => {
+const admin = (req, res, next) => {
   // No admin role check - always allow access
   next();
 };
 
-module.exports = { isAuthenticated, isAdmin };
+module.exports = { protect, admin };
