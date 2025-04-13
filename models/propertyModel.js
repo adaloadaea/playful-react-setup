@@ -12,7 +12,7 @@ class Property {
       const [properties] = await db.query(`
         SELECT p.*, 
                pa.wifi, pa.parking, pa.coffee, pa.reception, 
-               pa.secured, pa.accessible, pa.printers, 
+               pa.secured, pa.\`accessible\`, pa.printers, 
                pa.kitchen, pa.flexible_hours
         FROM properties p
         LEFT JOIN property_amenities pa ON p.id = pa.property_id
@@ -36,7 +36,7 @@ class Property {
       const [properties] = await db.query(
         `SELECT p.*, 
                 pa.wifi, pa.parking, pa.coffee, pa.reception, 
-                pa.secured, pa.accessible, pa.printers, 
+                pa.secured, pa.\`accessible\`, pa.printers, 
                 pa.kitchen, pa.flexible_hours
          FROM properties p
          LEFT JOIN property_amenities pa ON p.id = pa.property_id
@@ -125,7 +125,7 @@ class Property {
         await connection.query(
           `INSERT INTO property_amenities (
             property_id, wifi, parking, coffee, reception, secured,
-            accessible, printers, kitchen, flexible_hours
+            \`accessible\`, printers, kitchen, flexible_hours
           ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
           [
             id,
@@ -257,7 +257,7 @@ class Property {
               coffee = IFNULL(?, coffee),
               reception = IFNULL(?, reception),
               secured = IFNULL(?, secured),
-              accessible = IFNULL(?, accessible),
+              \`accessible\` = IFNULL(?, \`accessible\`),
               printers = IFNULL(?, printers),
               kitchen = IFNULL(?, kitchen),
               flexible_hours = IFNULL(?, flexible_hours)
@@ -280,7 +280,7 @@ class Property {
           await connection.query(
             `INSERT INTO property_amenities (
               property_id, wifi, parking, coffee, reception, secured,
-              accessible, printers, kitchen, flexible_hours
+              \`accessible\`, printers, kitchen, flexible_hours
             ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
             [
               id,
