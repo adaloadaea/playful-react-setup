@@ -3,7 +3,6 @@ const express = require("express");
 const router = express.Router();
 const propertyController = require("../controllers/propertyController");
 const { propertyValidation, idValidation, propertyUpdateValidation } = require("../middleware/propertyValidate");
-const { isAuthenticated, isAdmin } = require("../middleware/auth");
 const upload = require("../middleware/upload");
 
 /**
@@ -28,11 +27,10 @@ router.get("/:id", idValidation, propertyController.getPropertyById);
 /**
  * @route POST /api/properties
  * @desc Créer une nouvelle propriété avec upload d'image
- * @access Private - Nécessite une authentification
+ * @access Public - Aucune authentification requise
  */
 router.post(
   "/", 
-  isAuthenticated, 
   upload.single('image'),
   propertyValidation, 
   propertyController.createProperty
@@ -41,11 +39,10 @@ router.post(
 /**
  * @route PUT /api/properties/:id
  * @desc Mettre à jour une propriété existante avec possibilité de changer l'image
- * @access Private - Nécessite une authentification
+ * @access Public - Aucune authentification requise
  */
 router.put(
   "/:id", 
-  isAuthenticated,
   idValidation,
   upload.single('image'),
   propertyUpdateValidation, 
@@ -55,12 +52,10 @@ router.put(
 /**
  * @route DELETE /api/properties/:id
  * @desc Supprimer une propriété
- * @access Private - Nécessite une authentification et des droits d'administrateur
+ * @access Public - Aucune authentification requise
  */
 router.delete(
   "/:id", 
-  isAuthenticated, 
-  isAdmin, 
   idValidation, 
   propertyController.deleteProperty
 );

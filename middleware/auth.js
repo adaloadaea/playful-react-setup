@@ -1,15 +1,11 @@
 
 const isAuthenticated = (req, res, next) => {
-  if (!req.session.userId) {
-    return res.status(401).json({ message: "Not authenticated" });
-  }
+  // No authentication check - always allow access
   next();
 };
 
 const isAdmin = (req, res, next) => {
-  if (req.session.role !== "admin") {
-    return res.status(403).json({ message: "Admin access required" });
-  }
+  // No admin role check - always allow access
   next();
 };
 
