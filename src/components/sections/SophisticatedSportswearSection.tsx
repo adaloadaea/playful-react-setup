@@ -23,7 +23,7 @@ const SophisticatedSportswearSection = () => {
         <div 
           className="absolute inset-0 bg-cover bg-center"
           style={{
-            backgroundImage: `url("/lovable-uploads/75485a44-8fec-4d7a-ad9b-8983e7fe3f96.png")`
+            backgroundImage: `url("/lovable-uploads/dcedd9e6-ff56-448d-9c22-63c9d118640d.png")`
           }}
         >
           {/* Dark overlay */}
