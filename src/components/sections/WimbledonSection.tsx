@@ -1,10 +1,30 @@
 
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
-import { Pause } from 'lucide-react';
+import { Pause, Play } from 'lucide-react';
+import { useRef, useState } from 'react';
 
 const WimbledonSection = () => {
   const { t } = useTranslation();
+  const videoRefMobile = useRef<HTMLVideoElement>(null);
+  const videoRefDesktop = useRef<HTMLVideoElement>(null);
+  const [isPlaying, setIsPlaying] = useState(true);
+
+  const togglePlayPause = () => {
+    const mobileVideo = videoRefMobile.current;
+    const desktopVideo = videoRefDesktop.current;
+    
+    if (mobileVideo && desktopVideo) {
+      if (isPlaying) {
+        mobileVideo.pause();
+        desktopVideo.pause();
+      } else {
+        mobileVideo.play();
+        desktopVideo.play();
+      }
+      setIsPlaying(!isPlaying);
+    }
+  };
 
   return (
     <section className="relative">
@@ -13,6 +33,7 @@ const WimbledonSection = () => {
         {/* Video Background */}
         <div className="absolute inset-0">
           <video
+            ref={videoRefMobile}
             autoPlay
             muted
             loop
@@ -49,10 +70,17 @@ const WimbledonSection = () => {
             </Button>
           </div>
 
-          {/* Pause button at bottom */}
+          {/* Pause/Play button at bottom */}
           <div className="flex justify-start pb-8">
-            <button className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
-              <Pause className="w-5 h-5 text-white fill-white" />
+            <button 
+              onClick={togglePlayPause}
+              className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm hover:bg-white/30 transition-colors"
+            >
+              {isPlaying ? (
+                <Pause className="w-5 h-5 text-white fill-white" />
+              ) : (
+                <Play className="w-5 h-5 text-white fill-white" />
+              )}
             </button>
           </div>
         </div>
@@ -64,6 +92,7 @@ const WimbledonSection = () => {
           {/* Left side - Video */}
           <div className="relative overflow-hidden bg-black">
             <video
+              ref={videoRefDesktop}
               autoPlay
               muted
               loop
@@ -95,8 +124,15 @@ const WimbledonSection = () => {
               </div>
 
               <div className="flex justify-start">
-                <button className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
-                  <Pause className="w-5 h-5 text-white fill-white" />
+                <button 
+                  onClick={togglePlayPause}
+                  className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm hover:bg-white/30 transition-colors"
+                >
+                  {isPlaying ? (
+                    <Pause className="w-5 h-5 text-white fill-white" />
+                  ) : (
+                    <Play className="w-5 h-5 text-white fill-white" />
+                  )}
                 </button>
               </div>
             </div>
