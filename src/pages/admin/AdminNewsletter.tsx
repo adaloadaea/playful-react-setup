@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -173,52 +172,6 @@ const AdminNewsletter = () => {
             </CardContent>
           </Card>
         </div>
-
-        {/* Newsletter Composition */}
-        <Card className="border-0 shadow-lg">
-          <CardHeader>
-            <CardTitle className="font-playfair text-gray-900">
-              Composer une Newsletter
-            </CardTitle>
-            <CardDescription>
-              Créez et envoyez une nouvelle campagne email
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="text-sm font-medium text-gray-700 mb-2 block">
-                  Objet de l'email
-                </label>
-                <Input placeholder="Ex: Nouvelle Collection Automne/Hiver" />
-              </div>
-              <div>
-                <label className="text-sm font-medium text-gray-700 mb-2 block">
-                  Expéditeur
-                </label>
-                <Input placeholder="LUCCI BY E.Y <contact@lucci.com>" />
-              </div>
-            </div>
-            <div>
-              <label className="text-sm font-medium text-gray-700 mb-2 block">
-                Message
-              </label>
-              <Textarea 
-                placeholder="Rédigez votre newsletter ici..."
-                className="h-32"
-              />
-            </div>
-            <div className="flex justify-end space-x-2">
-              <Button variant="outline">
-                Prévisualiser
-              </Button>
-              <Button className="bg-gray-900 hover:bg-gray-800">
-                <Send className="mr-2 h-4 w-4" />
-                Envoyer à {activeSubscribers} abonnés
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
 
         {/* Add Subscriber */}
         <Card className="border-0 shadow-lg">
