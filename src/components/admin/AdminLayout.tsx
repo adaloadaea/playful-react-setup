@@ -64,24 +64,24 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
         />
       )}
 
-      {/* Fixed width sidebar for consistency */}
+      {/* Sidebar */}
       <div className={`
-        fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-xl transform transition-all duration-300 ease-in-out border-r border-gray-200
+        fixed inset-y-0 left-0 z-50 w-72 bg-white shadow-2xl transform transition-all duration-300 ease-in-out border-r border-gray-200
         ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
         lg:translate-x-0 lg:static lg:flex lg:flex-col
       `}>
         {/* Sidebar Header */}
-        <div className="flex items-center justify-between h-16 px-4 bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 border-b border-gray-700">
-          <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-gradient-to-br from-white to-gray-200 rounded-lg flex items-center justify-center flex-shrink-0">
+        <div className="flex items-center justify-between h-20 px-6 bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 border-b border-gray-700">
+          <div className="flex items-center space-x-3">
+            <div className="w-10 h-10 bg-gradient-to-br from-white to-gray-200 rounded-lg flex items-center justify-center">
               <img 
                 src="/lovable-uploads/04272c72-7979-4c68-9c37-efc9954ca58f.png" 
                 alt="LUCCI BY E.Y" 
-                className="h-4 w-auto object-contain"
+                className="h-6 object-contain"
               />
             </div>
-            <div className="text-white min-w-0">
-              <div className="font-playfair text-lg font-bold truncate">LUCCI Admin</div>
+            <div className="text-white">
+              <div className="font-playfair text-xl font-bold">LUCCI Admin</div>
               <div className="text-xs text-gray-300 font-light">Back Office</div>
             </div>
           </div>
@@ -89,14 +89,14 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
             variant="ghost"
             size="sm"
             onClick={() => setIsSidebarOpen(false)}
-            className="lg:hidden text-white hover:bg-gray-700 rounded-lg flex-shrink-0"
+            className="lg:hidden text-white hover:bg-gray-700 rounded-lg"
           >
-            <X className="h-4 w-4" />
+            <X className="h-5 w-5" />
           </Button>
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
+        <nav className="flex-1 px-4 py-6 space-y-2">
           {menuItems.map((item) => {
             const Icon = item.icon;
             return (
@@ -104,20 +104,20 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
                 key={item.name}
                 to={item.href}
                 className={`
-                  group flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200
+                  group flex items-center px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200
                   ${isActivePath(item.href)
-                    ? 'bg-gradient-to-r from-gray-900 to-gray-800 text-white shadow-md'
-                    : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
+                    ? 'bg-gradient-to-r from-gray-900 to-gray-800 text-white shadow-lg transform scale-[1.02]'
+                    : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900 hover:shadow-md'
                   }
                 `}
                 onClick={() => setIsSidebarOpen(false)}
               >
-                <Icon className={`mr-3 h-4 w-4 flex-shrink-0 transition-colors ${
+                <Icon className={`mr-3 h-5 w-5 transition-colors ${
                   isActivePath(item.href) ? 'text-white' : 'text-gray-500 group-hover:text-gray-700'
                 }`} />
-                <span className="font-medium truncate">{item.name}</span>
+                <span className="font-medium">{item.name}</span>
                 {isActivePath(item.href) && (
-                  <div className="ml-auto w-1.5 h-1.5 bg-white rounded-full flex-shrink-0"></div>
+                  <div className="ml-auto w-2 h-2 bg-white rounded-full"></div>
                 )}
               </Link>
             );
@@ -125,28 +125,28 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
         </nav>
 
         {/* Sidebar Footer */}
-        <div className="border-t border-gray-200 p-3 space-y-1">
+        <div className="border-t border-gray-200 p-4 space-y-2">
           <Button
             variant="ghost"
-            className="w-full justify-start text-gray-700 hover:bg-gray-100 rounded-lg py-2 px-3"
+            className="w-full justify-start text-gray-700 hover:bg-gray-100 rounded-xl py-3"
           >
-            <Settings className="mr-3 h-4 w-4 flex-shrink-0" />
-            <span className="font-medium truncate">Paramètres</span>
+            <Settings className="mr-3 h-4 w-4" />
+            <span className="font-medium">Paramètres</span>
           </Button>
           <Button
             variant="ghost"
-            className="w-full justify-start text-red-600 hover:bg-red-50 rounded-lg py-2 px-3"
+            className="w-full justify-start text-red-600 hover:bg-red-50 rounded-xl py-3"
           >
-            <LogOut className="mr-3 h-4 w-4 flex-shrink-0" />
-            <span className="font-medium truncate">Déconnexion</span>
+            <LogOut className="mr-3 h-4 w-4" />
+            <span className="font-medium">Déconnexion</span>
           </Button>
         </div>
       </div>
 
-      {/* Main content with consistent left margin */}
-      <div className="flex-1 lg:ml-64">
+      {/* Main content */}
+      <div className="flex-1 lg:ml-0">
         {/* Mobile header */}
-        <div className="lg:hidden bg-white shadow-sm border-b px-4 py-3">
+        <div className="lg:hidden bg-white shadow-sm border-b px-6 py-4">
           <div className="flex items-center justify-between">
             <Button
               variant="ghost"
@@ -154,17 +154,17 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
               onClick={() => setIsSidebarOpen(true)}
               className="text-gray-700 hover:bg-gray-100 rounded-lg"
             >
-              <Menu className="h-5 w-5" />
+              <Menu className="h-6 w-6" />
             </Button>
             <div className="flex items-center space-x-2">
               <img 
                 src="/lovable-uploads/04272c72-7979-4c68-9c37-efc9954ca58f.png" 
                 alt="LUCCI BY E.Y" 
-                className="h-6 object-contain"
+                className="h-8 object-contain"
               />
               <span className="font-playfair font-bold text-gray-900">Admin</span>
             </div>
-            <div className="w-8" />
+            <div className="w-10" />
           </div>
         </div>
 
