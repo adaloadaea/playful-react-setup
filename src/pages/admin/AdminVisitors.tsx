@@ -74,87 +74,87 @@ const AdminVisitors = () => {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50">
       {/* Header */}
       <div className="bg-white shadow-sm border-b">
-        <div className="px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-playfair font-bold text-gray-900">
+        <div className="px-4 sm:px-6 py-4">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+            <div className="mb-3 sm:mb-0">
+              <h1 className="text-2xl sm:text-3xl font-playfair font-bold text-gray-900">
                 Statistiques des Visiteurs
               </h1>
-              <p className="text-gray-600 mt-1">
+              <p className="text-gray-600 mt-1 text-sm sm:text-base">
                 Analyse du trafic et comportement des visiteurs
               </p>
             </div>
             <div className="flex items-center space-x-3">
               <div className="text-right">
-                <p className="text-sm text-gray-500">Mise à jour en temps réel</p>
-                <p className="text-sm font-medium text-gray-900">
+                <p className="text-xs sm:text-sm text-gray-500">Mise à jour en temps réel</p>
+                <p className="text-xs sm:text-sm font-medium text-gray-900">
                   {new Date().toLocaleString('fr-FR')}
                 </p>
               </div>
-              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse flex-shrink-0"></div>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="p-6 space-y-6">
+      <div className="p-4 sm:p-6 space-y-6">
         {/* Key Metrics */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <Card className="border-0 shadow-lg bg-gradient-to-br from-blue-50 to-blue-100">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+          <Card className="border-0 shadow-lg bg-white">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-blue-900">
+              <CardTitle className="text-sm font-medium text-gray-700">
                 Visiteurs Aujourd'hui
               </CardTitle>
-              <Users className="h-4 w-4 text-blue-600" />
+              <Users className="h-4 w-4 text-gray-900 flex-shrink-0" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-blue-900">1,247</div>
-              <p className="text-xs text-blue-600">
+              <div className="text-3xl font-bold text-gray-900 font-mono">1,247</div>
+              <p className="text-xs text-green-600 font-medium">
                 +12.5% vs hier
               </p>
             </CardContent>
           </Card>
 
-          <Card className="border-0 shadow-lg bg-gradient-to-br from-green-50 to-green-100">
+          <Card className="border-0 shadow-lg bg-white">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-green-900">
+              <CardTitle className="text-sm font-medium text-gray-700">
                 Pages Vues
               </CardTitle>
-              <Eye className="h-4 w-4 text-green-600" />
+              <Eye className="h-4 w-4 text-gray-900 flex-shrink-0" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-green-900">6,543</div>
-              <p className="text-xs text-green-600">
+              <div className="text-3xl font-bold text-gray-900 font-mono">6,543</div>
+              <p className="text-xs text-green-600 font-medium">
                 +8.3% vs hier
               </p>
             </CardContent>
           </Card>
 
-          <Card className="border-0 shadow-lg bg-gradient-to-br from-purple-50 to-purple-100">
+          <Card className="border-0 shadow-lg bg-white">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-purple-900">
+              <CardTitle className="text-sm font-medium text-gray-700">
                 Temps Moyen
               </CardTitle>
-              <Clock className="h-4 w-4 text-purple-600" />
+              <Clock className="h-4 w-4 text-gray-900 flex-shrink-0" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-purple-900">3m 24s</div>
-              <p className="text-xs text-purple-600">
+              <div className="text-3xl font-bold text-gray-900 font-mono">3m 24s</div>
+              <p className="text-xs text-green-600 font-medium">
                 +15s vs hier
               </p>
             </CardContent>
           </Card>
 
-          <Card className="border-0 shadow-lg bg-gradient-to-br from-orange-50 to-orange-100">
+          <Card className="border-0 shadow-lg bg-white">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-orange-900">
+              <CardTitle className="text-sm font-medium text-gray-700">
                 Taux de Rebond
               </CardTitle>
-              <TrendingUp className="h-4 w-4 text-orange-600" />
+              <TrendingUp className="h-4 w-4 text-gray-900 flex-shrink-0" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-orange-900">32%</div>
-              <p className="text-xs text-orange-600">
+              <div className="text-3xl font-bold text-gray-900 font-mono">32%</div>
+              <p className="text-xs text-green-600 font-medium">
                 -5% vs hier
               </p>
             </CardContent>
@@ -162,7 +162,7 @@ const AdminVisitors = () => {
         </div>
 
         {/* Traffic Chart */}
-        <Card className="border-0 shadow-lg">
+        <Card className="border-0 shadow-lg bg-white">
           <CardHeader>
             <CardTitle className="font-playfair text-gray-900">
               Évolution du Trafic (7 derniers jours)
@@ -172,54 +172,56 @@ const AdminVisitors = () => {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <ResponsiveContainer width="100%" height={400}>
-              <AreaChart data={dailyVisitors}>
-                <defs>
-                  <linearGradient id="colorVisitors" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#1f2937" stopOpacity={0.8}/>
-                    <stop offset="95%" stopColor="#1f2937" stopOpacity={0.1}/>
-                  </linearGradient>
-                  <linearGradient id="colorPageviews" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#6b7280" stopOpacity={0.8}/>
-                    <stop offset="95%" stopColor="#6b7280" stopOpacity={0.1}/>
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-                <XAxis dataKey="date" stroke="#64748b" />
-                <YAxis stroke="#64748b" />
-                <Tooltip 
-                  contentStyle={{ 
-                    backgroundColor: '#1e293b', 
-                    border: 'none', 
-                    borderRadius: '8px',
-                    color: 'white'
-                  }}
-                />
-                <Area 
-                  type="monotone" 
-                  dataKey="visitors" 
-                  stroke="#1f2937" 
-                  fillOpacity={1} 
-                  fill="url(#colorVisitors)"
-                  strokeWidth={2}
-                />
-                <Area 
-                  type="monotone" 
-                  dataKey="pageviews" 
-                  stroke="#6b7280" 
-                  fillOpacity={1} 
-                  fill="url(#colorPageviews)"
-                  strokeWidth={2}
-                />
-              </AreaChart>
-            </ResponsiveContainer>
+            <div className="h-80 sm:h-96">
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart data={dailyVisitors}>
+                  <defs>
+                    <linearGradient id="colorVisitors" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#1f2937" stopOpacity={0.8}/>
+                      <stop offset="95%" stopColor="#1f2937" stopOpacity={0.1}/>
+                    </linearGradient>
+                    <linearGradient id="colorPageviews" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#6b7280" stopOpacity={0.8}/>
+                      <stop offset="95%" stopColor="#6b7280" stopOpacity={0.1}/>
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
+                  <XAxis dataKey="date" stroke="#64748b" fontSize={12} />
+                  <YAxis stroke="#64748b" fontSize={12} />
+                  <Tooltip 
+                    contentStyle={{ 
+                      backgroundColor: '#1e293b', 
+                      border: 'none', 
+                      borderRadius: '8px',
+                      color: 'white'
+                    }}
+                  />
+                  <Area 
+                    type="monotone" 
+                    dataKey="visitors" 
+                    stroke="#1f2937" 
+                    fillOpacity={1} 
+                    fill="url(#colorVisitors)"
+                    strokeWidth={2}
+                  />
+                  <Area 
+                    type="monotone" 
+                    dataKey="pageviews" 
+                    stroke="#6b7280" 
+                    fillOpacity={1} 
+                    fill="url(#colorPageviews)"
+                    strokeWidth={2}
+                  />
+                </AreaChart>
+              </ResponsiveContainer>
+            </div>
           </CardContent>
         </Card>
 
         {/* Device & Sources */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Device Breakdown */}
-          <Card className="border-0 shadow-lg">
+          <Card className="border-0 shadow-lg bg-white">
             <CardHeader>
               <CardTitle className="font-playfair text-gray-900">
                 Appareils Utilisés
@@ -229,33 +231,35 @@ const AdminVisitors = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <ResponsiveContainer width="100%" height={300}>
-                <PieChart>
-                  <Pie
-                    data={deviceData}
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={60}
-                    outerRadius={100}
-                    paddingAngle={5}
-                    dataKey="value"
-                  >
-                    {deviceData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
-                    ))}
-                  </Pie>
-                  <Tooltip />
-                </PieChart>
-              </ResponsiveContainer>
-              <div className="flex justify-center space-x-6 mt-4">
+              <div className="h-64 sm:h-80">
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie
+                      data={deviceData}
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={60}
+                      outerRadius={100}
+                      paddingAngle={5}
+                      dataKey="value"
+                    >
+                      {deviceData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.color} />
+                      ))}
+                    </Pie>
+                    <Tooltip />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+              <div className="flex flex-wrap justify-center gap-4 mt-4">
                 {deviceData.map((entry, index) => (
                   <div key={index} className="flex items-center space-x-2">
                     <div 
-                      className="w-3 h-3 rounded-full"
+                      className="w-3 h-3 rounded-full flex-shrink-0"
                       style={{ backgroundColor: entry.color }}
                     ></div>
                     <span className="text-sm text-gray-600">{entry.name}</span>
-                    <span className="text-sm font-medium">{entry.value}%</span>
+                    <span className="text-sm font-bold font-mono">{entry.value}%</span>
                   </div>
                 ))}
               </div>
@@ -263,7 +267,7 @@ const AdminVisitors = () => {
           </Card>
 
           {/* Traffic Sources */}
-          <Card className="border-0 shadow-lg">
+          <Card className="border-0 shadow-lg bg-white">
             <CardHeader>
               <CardTitle className="font-playfair text-gray-900">
                 Sources de Trafic
@@ -276,17 +280,17 @@ const AdminVisitors = () => {
               <div className="space-y-4">
                 {trafficSources.map((source, index) => (
                   <div key={index} className="flex items-center justify-between">
-                    <div className="flex items-center space-x-3">
+                    <div className="flex items-center space-x-3 min-w-0 flex-1">
                       <div 
-                        className="w-4 h-4 rounded-full"
+                        className="w-4 h-4 rounded-full flex-shrink-0"
                         style={{ backgroundColor: source.color }}
                       ></div>
-                      <span className="text-sm font-medium text-gray-900">
+                      <span className="text-sm font-medium text-gray-900 truncate">
                         {source.source}
                       </span>
                     </div>
-                    <div className="text-right">
-                      <div className="text-sm font-bold text-gray-900">
+                    <div className="text-right ml-2">
+                      <div className="text-sm font-bold text-gray-900 font-mono">
                         {source.visitors.toLocaleString('fr-FR')}
                       </div>
                       <div className="text-xs text-gray-500">visiteurs</div>
@@ -301,7 +305,7 @@ const AdminVisitors = () => {
         {/* Top Pages & Countries */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Top Pages */}
-          <Card className="border-0 shadow-lg">
+          <Card className="border-0 shadow-lg bg-white">
             <CardHeader>
               <CardTitle className="font-playfair text-gray-900">
                 Pages les Plus Visitées
@@ -314,18 +318,18 @@ const AdminVisitors = () => {
               <div className="space-y-4">
                 {topPages.map((page, index) => (
                   <div key={index} className="flex items-center justify-between">
-                    <div className="flex items-center space-x-3">
-                      <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center">
+                    <div className="flex items-center space-x-3 min-w-0 flex-1">
+                      <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0">
                         <span className="text-xs font-bold text-gray-600">
                           {index + 1}
                         </span>
                       </div>
-                      <span className="text-sm font-medium text-gray-900">
+                      <span className="text-sm font-medium text-gray-900 truncate">
                         {page.page}
                       </span>
                     </div>
-                    <div className="text-right">
-                      <div className="text-sm font-bold text-gray-900">
+                    <div className="text-right ml-2">
+                      <div className="text-sm font-bold text-gray-900 font-mono">
                         {page.visitors.toLocaleString('fr-FR')}
                       </div>
                       <div className="text-xs text-gray-500">
@@ -339,10 +343,10 @@ const AdminVisitors = () => {
           </Card>
 
           {/* Top Countries */}
-          <Card className="border-0 shadow-lg">
+          <Card className="border-0 shadow-lg bg-white">
             <CardHeader>
               <CardTitle className="font-playfair text-gray-900 flex items-center">
-                <MapPin className="mr-2 h-5 w-5" />
+                <MapPin className="mr-2 h-5 w-5 flex-shrink-0" />
                 Pays des Visiteurs
               </CardTitle>
               <CardDescription>
@@ -353,14 +357,14 @@ const AdminVisitors = () => {
               <div className="space-y-4">
                 {countries.map((country, index) => (
                   <div key={index} className="flex items-center justify-between">
-                    <div className="flex items-center space-x-3">
-                      <span className="text-lg">{country.flag}</span>
-                      <span className="text-sm font-medium text-gray-900">
+                    <div className="flex items-center space-x-3 min-w-0 flex-1">
+                      <span className="text-lg flex-shrink-0">{country.flag}</span>
+                      <span className="text-sm font-medium text-gray-900 truncate">
                         {country.country}
                       </span>
                     </div>
-                    <div className="text-right">
-                      <div className="text-sm font-bold text-gray-900">
+                    <div className="text-right ml-2">
+                      <div className="text-sm font-bold text-gray-900 font-mono">
                         {country.visitors.toLocaleString('fr-FR')}
                       </div>
                       <div className="text-xs text-gray-500">visiteurs</div>
