@@ -6,7 +6,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { X } from 'lucide-react';
 
 interface AboutModalProps {
   isOpen: boolean;
@@ -23,13 +22,6 @@ const AboutModal = ({ isOpen, onClose }: AboutModalProps) => {
           <DialogTitle className="text-2xl font-serif text-gray-900">
             {t('wimbledon.aboutTitle')}
           </DialogTitle>
-          <button
-            onClick={onClose}
-            className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100"
-          >
-            <X className="h-4 w-4" />
-            <span className="sr-only">Close</span>
-          </button>
         </DialogHeader>
         
         <div className="px-6 pb-6">
