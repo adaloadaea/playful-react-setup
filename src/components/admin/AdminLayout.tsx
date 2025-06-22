@@ -10,8 +10,7 @@ import {
   BarChart3, 
   Menu, 
   X,
-  LogOut,
-  Settings
+  LogOut
 } from 'lucide-react';
 
 interface AdminLayoutProps {
@@ -66,12 +65,12 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
 
       {/* Sidebar */}
       <div className={`
-        fixed inset-y-0 left-0 z-50 w-72 bg-white shadow-2xl transform transition-all duration-300 ease-in-out border-r border-gray-200
+        fixed inset-y-0 left-0 z-50 w-72 bg-white shadow-2xl transform transition-all duration-300 ease-in-out border-r border-gray-200 h-screen
         ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
         lg:translate-x-0 lg:static lg:flex lg:flex-col
       `}>
         {/* Sidebar Header */}
-        <div className="flex items-center justify-between h-20 px-6 bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 border-b border-gray-700">
+        <div className="flex items-center justify-between h-20 px-6 bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 border-b border-gray-700 flex-shrink-0">
           <div className="flex items-center space-x-3">
             <div className="w-10 h-10 bg-gradient-to-br from-white to-gray-200 rounded-lg flex items-center justify-center">
               <img 
@@ -96,7 +95,7 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 px-4 py-6 space-y-2">
+        <nav className="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
           {menuItems.map((item) => {
             const Icon = item.icon;
             return (
@@ -125,14 +124,7 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
         </nav>
 
         {/* Sidebar Footer */}
-        <div className="border-t border-gray-200 p-4 space-y-2">
-          <Button
-            variant="ghost"
-            className="w-full justify-start text-gray-700 hover:bg-gray-100 rounded-xl py-3"
-          >
-            <Settings className="mr-3 h-4 w-4" />
-            <span className="font-medium">Paramètres</span>
-          </Button>
+        <div className="border-t border-gray-200 p-4 flex-shrink-0">
           <Button
             variant="ghost"
             className="w-full justify-start text-red-600 hover:bg-red-50 rounded-xl py-3"
@@ -144,7 +136,7 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
       </div>
 
       {/* Main content */}
-      <div className="flex-1 lg:ml-0">
+      <div className="flex-1 lg:ml-0 min-h-screen">
         {/* Mobile header */}
         <div className="lg:hidden bg-white shadow-sm border-b px-6 py-4">
           <div className="flex items-center justify-between">
@@ -169,7 +161,7 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
         </div>
 
         {/* Page content */}
-        <main className="flex-1 min-h-screen">
+        <main className="flex-1 h-full">
           {children}
         </main>
       </div>
