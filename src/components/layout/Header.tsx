@@ -135,7 +135,7 @@ const Header = ({ onMenuClick, onContactOpen, onBookingOpen }: HeaderProps) => {
       <div onMouseLeave={handleMouseLeave}>
         <header className={`fixed left-0 right-0 z-40 transition-all duration-300 ${
           shouldUseTransparentHeader 
-            ? 'top-[42px] bg-transparent mt-4' 
+            ? 'top-[42px] bg-transparent mt-2' 
             : 'top-0 bg-white border-b border-gray-100 shadow-sm'
         }`}>
           {/* Main header */}
