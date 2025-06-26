@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Search, ShoppingBag, MapPin, Menu, Heart, Instagram, Facebook } from 'lucide-react';
@@ -52,59 +53,8 @@ const Header = ({ onMenuClick }: HeaderProps) => {
     <header className={`fixed left-0 right-0 z-40 transition-all duration-300 ${
       isScrolled 
         ? 'top-0 bg-white border-b border-gray-100 shadow-sm' 
-        : 'top-[42px] bg-transparent'
+        : 'top-0 bg-transparent'
     }`}>
-      {/* Top utility bar - always visible */}
-      <div className="hidden md:block border-b border-gray-100 py-2 px-6">
-        <div className="flex justify-between items-center text-sm">
-          {/* Social Media Links - Left side */}
-          <div className="flex items-center space-x-3">
-            <a
-              href="https://www.instagram.com/luccibyey/?hl=en"
-              target="_blank"
-              rel="noopener noreferrer"
-              className={`transition-colors hover:scale-110 transform ${
-                isScrolled 
-                  ? 'text-gray-600 hover:text-gray-900' 
-                  : 'text-white/90 hover:text-white'
-              }`}
-            >
-              <Instagram className="w-4 h-4" />
-            </a>
-            <a
-              href="https://www.facebook.com/luccibyey.net/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className={`transition-colors hover:scale-110 transform ${
-                isScrolled 
-                  ? 'text-gray-600 hover:text-gray-900' 
-                  : 'text-white/90 hover:text-white'
-              }`}
-            >
-              <Facebook className="w-4 h-4" />
-            </a>
-          </div>
-
-          {/* Store Finder and Language - Right side */}
-          <div className="flex items-center space-x-4">
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              className={`transition-colors ${
-                isScrolled 
-                  ? 'text-gray-600 hover:text-gray-900' 
-                  : 'text-white/90 hover:text-white'
-              }`}
-              onClick={handleStoreFinderOpen}
-            >
-              <MapPin className="w-4 h-4 mr-1" />
-              {t('header.findStore')}
-            </Button>
-            <LanguageSelector variant={isScrolled ? 'default' : 'white'} />
-          </div>
-        </div>
-      </div>
-
       {/* Main header */}
       <div className="px-4 md:px-6 py-4">
         <div className="flex items-center justify-between relative">
