@@ -1,5 +1,6 @@
 
 import { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import Header from './Header';
 import MobileSidebar from './MobileSidebar';
 import AnnouncementBar from './AnnouncementBar';
@@ -16,12 +17,16 @@ interface LayoutProps {
 }
 
 const Layout = ({ children }: LayoutProps) => {
+  const location = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isStoreFinderOpen, setIsStoreFinderOpen] = useState(false);
   const [isBookingOpen, setIsBookingOpen] = useState(false);
   const [isWishlistOpen, setIsWishlistOpen] = useState(false);
   const [isContactOpen, setIsContactOpen] = useState(false);
   const [isNewsletterOpen, setIsNewsletterOpen] = useState(false);
+
+  // Check if we're on an admin page
+  const isAdminPage = location.pathname.startsWith('/admin');
 
   useEffect(() => {
     // Show newsletter modal after a short delay when app loads
@@ -82,7 +87,7 @@ const Layout = ({ children }: LayoutProps) => {
 
   return (
     <div className="min-h-screen bg-white">
-      <AnnouncementBar onStoreFinderOpen={handleStoreFinderOpen} />
+      {!isAdminPage && <AnnouncementBar onStoreFinderOpen={handleStoreFinderOpen} />}
       <Header 
         onMenuClick={handleMenuClick} 
         onContactOpen={handleContactOpen}

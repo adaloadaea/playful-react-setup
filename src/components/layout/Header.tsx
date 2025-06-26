@@ -135,8 +135,8 @@ const Header = ({ onMenuClick, onContactOpen, onBookingOpen }: HeaderProps) => {
       <div onMouseLeave={handleMouseLeave}>
         <header className={`fixed left-0 right-0 z-40 transition-all duration-300 ${
           shouldUseTransparentHeader 
-            ? 'top-[42px] bg-transparent mt-2' 
-            : 'top-0 bg-white border-b border-gray-100 shadow-sm'
+            ? 'top-[42px] bg-transparent' 
+            : 'top-[42px] bg-white border-b border-gray-100 shadow-sm'
         }`}>
           {/* Main header */}
           <div className="px-4 md:px-6 py-4">
@@ -307,7 +307,7 @@ const Header = ({ onMenuClick, onContactOpen, onBookingOpen }: HeaderProps) => {
           <StoreFinderModal isOpen={isStoreFinderOpen} onClose={handleStoreFinderClose} />
         </header>
 
-        {/* Product Dropdown - positioned outside header to avoid z-index issues */}
+        {/* Product Dropdown - positioned directly below header */}
         <div 
           onMouseEnter={handleDropdownMouseEnter}
           onMouseLeave={handleDropdownMouseLeave}

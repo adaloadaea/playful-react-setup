@@ -195,7 +195,7 @@ const ProductDropdown = ({ isOpen, activeCategory, onClose }: ProductDropdownPro
   return (
     <div 
       className="fixed inset-x-0 z-50 bg-white shadow-lg border-t border-gray-100" 
-      style={{ top: 'calc(42px + 120px)' }}
+      style={{ top: 'calc(42px + 88px)' }}
       onClick={handleDropdownClick}
     >
       <div className="max-w-7xl mx-auto px-6 py-8">
