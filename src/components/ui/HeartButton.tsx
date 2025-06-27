@@ -76,11 +76,13 @@ const HeartButton: React.FC<HeartButtonProps> = ({ product, className = '', size
       variant="ghost"
       size="sm"
       onClick={handleToggleWishlist}
-      className={`p-2 hover:bg-white/20 transition-colors ${className}`}
+      className={`p-2 hover:bg-slate-100 transition-all duration-200 ${className}`}
     >
       <Heart
-        className={`${sizeClasses[size]} transition-colors ${
-          isLiked ? 'fill-red-500 text-red-500' : 'text-white'
+        className={`${sizeClasses[size]} transition-all duration-200 ${
+          isLiked 
+            ? 'fill-red-500 text-red-500' 
+            : 'text-slate-600 hover:text-red-400'
         }`}
       />
     </Button>
