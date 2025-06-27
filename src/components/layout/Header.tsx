@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate, Link } from 'react-router-dom';
@@ -42,6 +41,7 @@ const Header = ({ onMenuClick, onContactOpen, onBookingOpen }: HeaderProps) => {
   const [isWishlistOpen, setIsWishlistOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isHeaderHovered, setIsHeaderHovered] = useState(false);
   const [closeTimeout, setCloseTimeout] = useState<NodeJS.Timeout | null>(null);
   
   // Mobile search states
@@ -105,7 +105,8 @@ const Header = ({ onMenuClick, onContactOpen, onBookingOpen }: HeaderProps) => {
   }, [mobileSearchTerm, isSearchOpen]);
 
   // For non-index pages, always use the non-transparent header
-  const shouldUseTransparentHeader = isIndexPage && !isScrolled;
+  // On index page, use transparent header only when not scrolled AND not hovered
+  const shouldUseTransparentHeader = isIndexPage && !isScrolled && !isHeaderHovered;
 
   const navItems = [
     { 
@@ -229,14 +230,30 @@ const Header = ({ onMenuClick, onContactOpen, onBookingOpen }: HeaderProps) => {
     };
   }, [closeTimeout]);
 
+  const handleHeaderMouseEnter = () => {
+    if (isIndexPage) {
+      setIsHeaderHovered(true);
+    }
+  };
+
+  const handleHeaderMouseLeave = () => {
+    if (isIndexPage) {
+      setIsHeaderHovered(false);
+    }
+  };
+
   return (
     <>
       <div className="relative" onMouseLeave={handleMouseLeave}>
-        <header className={`fixed left-0 right-0 z-40 transition-all duration-300 ${
-          shouldUseTransparentHeader 
-            ? 'top-[42px] bg-transparent' 
-            : 'top-0 bg-white border-b border-gray-100 shadow-sm'
-        }`}>
+        <header 
+          className={`fixed left-0 right-0 z-40 transition-all duration-300 ${
+            shouldUseTransparentHeader 
+              ? 'top-[42px] bg-transparent' 
+              : 'top-0 bg-white border-b border-gray-100 shadow-sm'
+          }`}
+          onMouseEnter={handleHeaderMouseEnter}
+          onMouseLeave={handleHeaderMouseLeave}
+        >
           {/* Main header */}
           <div className="px-4 md:px-6 py-4">
             <div className="flex items-center justify-between relative">
