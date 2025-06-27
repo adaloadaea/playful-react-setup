@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -41,6 +42,7 @@ const CategoryProducts: React.FC<CategoryProductsProps> = ({
   
   const [translatedProducts, setTranslatedProducts] = useState<Product[]>([]);
   const [lastTranslatedLanguage, setLastTranslatedLanguage] = useState<string>('');
+  const [visibleItems, setVisibleItems] = useState<Set<number>>(new Set());
 
   // Set initial products without translation
   useEffect(() => {
@@ -58,6 +60,21 @@ const CategoryProducts: React.FC<CategoryProductsProps> = ({
       });
     }
   }, [currentLanguage, products, lastTranslatedLanguage, isTranslating, translateProductList]);
+
+  // Staggered animation effect for product cards
+  useEffect(() => {
+    if (translatedProducts.length > 0 && !loading) {
+      // Reset visible items when products change
+      setVisibleItems(new Set());
+      
+      // Animate cards one by one with staggered delay
+      translatedProducts.forEach((product, index) => {
+        setTimeout(() => {
+          setVisibleItems(prev => new Set([...prev, product.id_product]));
+        }, index * 100); // 100ms delay between each card
+      });
+    }
+  }, [translatedProducts, loading]);
 
   const formatPrice = (price: string | number) => {
     const numPrice = typeof price === 'string' ? parseFloat(price) : price;
@@ -111,7 +128,14 @@ const CategoryProducts: React.FC<CategoryProductsProps> = ({
     return (
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
         {Array.from({ length: 12 }).map((_, index) => (
-          <div key={index} className="animate-pulse">
+          <div 
+            key={index} 
+            className="animate-pulse opacity-0 animate-fade-in"
+            style={{ 
+              animationDelay: `${index * 50}ms`,
+              animationFillMode: 'forwards'
+            }}
+          >
             <div className="aspect-[3/4] bg-slate-200 rounded-lg mb-4"></div>
             <div className="h-4 bg-slate-200 rounded mb-2"></div>
             <div className="h-4 bg-slate-200 rounded w-2/3"></div>
@@ -126,9 +150,17 @@ const CategoryProducts: React.FC<CategoryProductsProps> = ({
       {translatedProducts.map((product) => {
         const hasSecondImage = product.img2 && product.img2.trim() !== '';
         const isLiked = isInWishlist(product.id_product.toString());
+        const isVisible = visibleItems.has(product.id_product);
 
         return (
-          <div key={product.id_product} className="group relative">
+          <div 
+            key={product.id_product} 
+            className={`group relative transition-all duration-500 ${
+              isVisible 
+                ? 'opacity-100 translate-y-0' 
+                : 'opacity-0 translate-y-4'
+            }`}
+          >
             <div className="relative">
               {/* Product Image */}
               <div 
