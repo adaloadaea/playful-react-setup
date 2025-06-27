@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate, Link } from 'react-router-dom';
@@ -41,7 +42,6 @@ const Header = ({ onMenuClick, onContactOpen, onBookingOpen }: HeaderProps) => {
   const [isWishlistOpen, setIsWishlistOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [isScrolled, setIsScrolled] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
   const [closeTimeout, setCloseTimeout] = useState<NodeJS.Timeout | null>(null);
   
   // Mobile search states
@@ -104,8 +104,8 @@ const Header = ({ onMenuClick, onContactOpen, onBookingOpen }: HeaderProps) => {
     return () => clearTimeout(timeoutId);
   }, [mobileSearchTerm, isSearchOpen]);
 
-  // Determine header style based on page, scroll, and hover state
-  const shouldUseTransparentHeader = isIndexPage && !isScrolled && !isHovered;
+  // For non-index pages, always use the non-transparent header
+  const shouldUseTransparentHeader = isIndexPage && !isScrolled;
 
   const navItems = [
     { 
@@ -232,15 +232,11 @@ const Header = ({ onMenuClick, onContactOpen, onBookingOpen }: HeaderProps) => {
   return (
     <>
       <div className="relative" onMouseLeave={handleMouseLeave}>
-        <header 
-          className={`fixed left-0 right-0 z-40 transition-all duration-300 ${
-            shouldUseTransparentHeader 
-              ? 'top-[42px] bg-transparent' 
-              : 'top-[42px] bg-white border-b border-gray-100 shadow-sm'
-          }`}
-          onMouseEnter={() => setIsHovered(true)}
-          onMouseLeave={() => setIsHovered(false)}
-        >
+        <header className={`fixed left-0 right-0 z-40 transition-all duration-300 ${
+          shouldUseTransparentHeader 
+            ? 'top-[42px] bg-transparent' 
+            : 'top-0 bg-white border-b border-gray-100 shadow-sm'
+        }`}>
           {/* Main header */}
           <div className="px-4 md:px-6 py-4">
             <div className="flex items-center justify-between relative">
