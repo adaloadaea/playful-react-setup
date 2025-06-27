@@ -12,7 +12,7 @@ export const useInfiniteScroll = ({
   fetchMore,
   hasMore,
   loading,
-  threshold = 200
+  threshold = 800 // Increased default threshold
 }: UseInfiniteScrollProps) => {
   const [isFetching, setIsFetching] = useState(false);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
@@ -25,7 +25,7 @@ export const useInfiniteScroll = ({
     const scrollHeight = document.documentElement.scrollHeight;
     const clientHeight = document.documentElement.clientHeight;
 
-    // Déclencher le chargement quand on approche du bas
+    // Déclencher le chargement plus tôt avec un seuil plus élevé
     if (scrollTop + clientHeight >= scrollHeight - threshold) {
       console.log('Déclenchement du scroll infini');
       setIsFetching(true);
@@ -34,9 +34,19 @@ export const useInfiniteScroll = ({
   }, [loading, isFetching, hasMore, threshold]);
 
   useEffect(() => {
-    // Ajouter l'écouteur d'événement de défilement
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
+    // Ajouter l'écouteur d'événement de défilement avec throttling
+    let timeoutId: NodeJS.Timeout;
+    
+    const throttledScroll = () => {
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(handleScroll, 100); // Throttle for better performance
+    };
+
+    window.addEventListener('scroll', throttledScroll, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', throttledScroll);
+      clearTimeout(timeoutId);
+    };
   }, [handleScroll]);
 
   useEffect(() => {
@@ -46,11 +56,11 @@ export const useInfiniteScroll = ({
     console.log('Chargement de plus de produits...');
     fetchMore();
     
-    // Réinitialiser après un délai plus long pour permettre l'animation
+    // Réinitialiser après un délai plus court pour une réactivité améliorée
     setTimeout(() => {
       setIsFetching(false);
       setIsLoadingMore(false);
-    }, 800);
+    }, 500); // Reduced from 800ms to 500ms
   }, [isFetching, fetchMore]);
 
   return { isFetching, isLoadingMore };

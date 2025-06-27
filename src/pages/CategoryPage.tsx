@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -27,7 +28,8 @@ const CategoryPage = () => {
     categories: []
   });
   
-  const itemsPerLoad = 12; // Nombre d'éléments à charger à la fois
+  // Increased initial load and reduced loading threshold for faster loading
+  const itemsPerLoad = 16; // Load more items at once
   const [currentIndex, setCurrentIndex] = useState(itemsPerLoad);
 
   // Extraire itemgroup depuis subcategory (ex: "homme-blazers" -> "blazers")
@@ -145,11 +147,12 @@ const CategoryPage = () => {
   const hasMore = currentIndex < filteredProducts.length;
   console.log('A plus de produits?', hasMore, 'Index actuel:', currentIndex, 'Total filtré:', filteredProducts.length);
 
-  // Utiliser le hook de défilement infini
+  // Utiliser le hook de défilement infini avec un seuil plus élevé pour un chargement plus rapide
   const { isFetching, isLoadingMore } = useInfiniteScroll({
     fetchMore: loadMoreProducts,
     hasMore,
-    loading
+    loading,
+    threshold: 800 // Increased threshold so products load earlier
   });
 
   const toggleLike = (productId: number) => {
@@ -235,28 +238,48 @@ const CategoryPage = () => {
               onToggleLike={toggleLike}
             />
 
-            {/* Smooth Loading Animation */}
+            {/* Enhanced Loading Animation */}
             {isLoadingMore && hasMore && (
-              <div className="flex flex-col items-center py-8 animate-fade-in">
-                <div className="flex items-center gap-3 mb-4">
-                  <Loader2 className="h-6 w-6 animate-spin text-slate-600" />
+              <div className="flex flex-col items-center py-12 animate-fade-in">
+                <div className="relative">
+                  {/* Primary loader */}
+                  <Loader2 className="h-8 w-8 animate-spin text-slate-600" />
+                  {/* Secondary pulse effect */}
+                  <div className="absolute inset-0 h-8 w-8 animate-ping rounded-full bg-slate-600 opacity-20"></div>
+                </div>
+                <div className="mt-4 text-center">
                   <span className="text-sm text-slate-600 font-medium">
                     Chargement de nouveaux produits...
                   </span>
+                  <div className="mt-2 w-48 h-1 bg-slate-200 rounded-full overflow-hidden">
+                    <div className="h-full bg-gradient-to-r from-slate-400 to-slate-600 rounded-full animate-pulse"></div>
+                  </div>
                 </div>
-                <div className="w-32 h-1 bg-slate-200 rounded-full overflow-hidden">
-                  <div className="h-full bg-slate-600 rounded-full animate-pulse"></div>
+              </div>
+            )}
+
+            {/* Smooth transition when approaching more content */}
+            {!isLoadingMore && hasMore && displayedProducts.length > itemsPerLoad && (
+              <div className="flex justify-center py-6 animate-fade-in">
+                <div className="text-center">
+                  <div className="w-12 h-px bg-slate-300 mx-auto mb-3"></div>
+                  <p className="text-xs text-slate-400 font-light">
+                    Continuez à faire défiler pour voir plus de produits
+                  </p>
                 </div>
               </div>
             )}
 
             {/* End of Products Indicator */}
             {!hasMore && displayedProducts.length > 0 && (
-              <div className="flex justify-center py-8 animate-fade-in">
+              <div className="flex justify-center py-12 animate-fade-in">
                 <div className="text-center">
-                  <div className="w-16 h-px bg-slate-300 mx-auto mb-4"></div>
-                  <p className="text-sm text-slate-500">
-                    Vous avez vu tous les produits
+                  <div className="w-24 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent mx-auto mb-6"></div>
+                  <p className="text-sm text-slate-500 font-light">
+                    Vous avez exploré toute notre collection
+                  </p>
+                  <p className="text-xs text-slate-400 mt-1">
+                    {displayedProducts.length} produits affichés
                   </p>
                 </div>
               </div>
