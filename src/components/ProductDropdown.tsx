@@ -148,7 +148,7 @@ const ProductDropdown: React.FC<ProductDropdownProps> = ({ isOpen, activeCategor
                               className="w-full h-full object-cover"
                             />
                           </div>
-                          <span className="font-medium text-gray-900 text-sm group-hover:text-black transition-colors font-hm-sans">
+                          <span className="font-medium text-gray-900 text-base group-hover:text-black transition-colors font-hm-sans">
                             {item.name}
                           </span>
                           <ChevronRight className="w-3 h-3 text-gray-400 group-hover:text-gray-600 ml-auto transition-colors" />
