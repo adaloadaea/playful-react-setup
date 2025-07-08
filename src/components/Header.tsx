@@ -11,6 +11,7 @@ import CartDropdown from "./CartDropdown";
 import WishlistModal from "./WishlistModal";
 import MobileSidebar from "./MobileSidebar";
 import ProductDropdown from "./ProductDropdown";
+import SearchModal from "./SearchModal";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -116,6 +117,7 @@ const Header = () => {
                     placeholder="Rechercher..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
+                    onFocus={() => setIsSearchOpen(true)}
                     className="w-80 pl-10 pr-4 py-2 border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent text-sm font-hm-sans bg-gray-50 hover:bg-white transition-colors"
                   />
                   {searchQuery && (
@@ -147,7 +149,7 @@ const Header = () => {
                 {/* Mobile Search Icon */}
                 <button 
                   className="md:hidden p-2 hover:bg-gray-100 rounded-sm transition-colors"
-                  onClick={() => setIsSearchOpen(!isSearchOpen)}
+                  onClick={() => setIsSearchOpen(true)}
                 >
                   <Search size={20} />
                 </button>
@@ -195,57 +197,11 @@ const Header = () => {
               </div>
             </div>
           </div>
-
         </div>
-
-        {/* Search Bar - Appears at bottom of header */}
-        {isSearchOpen && (
-          <div className="border-t border-gray-100 bg-white shadow-lg">
-            <div className="container mx-auto px-4 py-4">
-              <form onSubmit={handleSearchSubmit} className="relative">
-                <div className="relative flex items-center">
-                  <Search className="absolute left-4 h-5 w-5 text-gray-400" />
-                  <input
-                    type="text"
-                    placeholder="Rechercher des produits, collections, références..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full pl-12 pr-16 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent text-sm font-hm-sans bg-gray-50 hover:bg-white transition-colors"
-                    autoFocus
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setIsSearchOpen(false)}
-                    className="absolute right-4 p-1 hover:bg-gray-100 rounded-full transition-colors"
-                  >
-                    <X className="h-4 w-4 text-gray-400" />
-                  </button>
-                </div>
-                
-                {/* Search suggestions - Better centered */}
-                <div className="mt-4 text-center">
-                  <span className="text-xs text-gray-500 font-hm-sans block mb-3">Recherches populaires:</span>
-                  <div className="flex flex-wrap justify-center gap-2">
-                    {["Costume sur mesure", "Chemise blanche", "Cravate soie", "Veste blazer", "Pantalon costume"].map((suggestion) => (
-                      <button
-                        key={suggestion}
-                        type="button"
-                        onClick={() => {
-                          setSearchQuery(suggestion);
-                          setIsSearchOpen(false);
-                        }}
-                        className="text-xs bg-gray-100 hover:bg-gray-200 px-3 py-1 rounded-full transition-colors font-hm-sans text-gray-700 hover:text-black"
-                      >
-                        {suggestion}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              </form>
-            </div>
-          </div>
-        )}
       </header>
+      
+      {/* Search Modal */}
+      <SearchModal isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
       
       {/* Product Dropdown */}
       <ProductDropdown 
