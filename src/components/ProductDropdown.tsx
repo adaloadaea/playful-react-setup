@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { ChevronRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -117,31 +118,30 @@ const ProductDropdown: React.FC<ProductDropdownProps> = ({ isOpen, activeCategor
       className="fixed top-[104px] left-0 right-0 bg-white border-b border-gray-200 shadow-lg z-50 animate-fade-in"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
-      style={{ marginTop: '0px' }}
       onClick={(e) => e.stopPropagation()}
     >
-      <div className="container mx-auto px-4 py-6">
+      <div className="container mx-auto px-4 py-3">
         <div className="max-w-5xl mx-auto">
-          <div className="grid grid-cols-12 gap-8">
+          <div className="grid grid-cols-12 gap-6">
             {/* Left Side - Items */}
             <div className="col-span-8">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {category.sections.map((section, sectionIndex) => (
-                  <div key={sectionIndex} className="space-y-3">
-                    <h3 className="text-lg font-semibold text-gray-900 font-hm-sans border-b border-gray-100 pb-1">
+                  <div key={sectionIndex} className="space-y-2">
+                    <h3 className="text-base font-semibold text-gray-900 font-hm-sans border-b border-gray-100 pb-1">
                       {section.title}
                     </h3>
-                    <div className="space-y-1">
+                    <div className="space-y-0.5">
                       {section.items.map((item, itemIndex) => (
                         <button
                           key={itemIndex}
-                          className="group flex items-center gap-3 w-full p-2 hover:bg-gray-50 rounded-md transition-all duration-200"
+                          className="group flex items-center gap-2 w-full p-1.5 hover:bg-gray-50 rounded-md transition-all duration-200"
                           onClick={() => {
                             navigate(item.url);
                             onClose();
                           }}
                         >
-                          <div className="w-8 h-8 rounded-md overflow-hidden bg-gray-100 flex-shrink-0">
+                          <div className="w-6 h-6 rounded-md overflow-hidden bg-gray-100 flex-shrink-0">
                             <img 
                               src={item.image} 
                               alt={item.name}
@@ -162,15 +162,15 @@ const ProductDropdown: React.FC<ProductDropdownProps> = ({ isOpen, activeCategor
             
             {/* Right Side - Category Image */}
             <div className="col-span-4">
-              <div className="bg-gray-50 rounded-lg p-4 h-full flex flex-col items-center justify-center">
-                <div className="w-full aspect-square rounded-lg overflow-hidden mb-4 shadow-sm">
+              <div className="bg-gray-50 rounded-lg p-3 h-full flex flex-col items-center justify-center">
+                <div className="w-full aspect-square rounded-lg overflow-hidden mb-3 shadow-sm">
                   <img 
                     src={getCategoryImage(activeCategory)} 
                     alt={category.title}
                     className="w-full h-full object-cover"
                   />
                 </div>
-                <h2 className="text-xl font-semibold text-gray-900 font-hm-sans text-center mb-2">
+                <h2 className="text-lg font-semibold text-gray-900 font-hm-sans text-center mb-1">
                   {category.title}
                 </h2>
                 <p className="text-gray-600 text-sm text-center font-hm-sans">
@@ -181,13 +181,13 @@ const ProductDropdown: React.FC<ProductDropdownProps> = ({ isOpen, activeCategor
           </div>
           
           {/* Centered bottom button */}
-          <div className="mt-6 pt-4 border-t border-gray-100 text-center">
+          <div className="mt-3 pt-3 border-t border-gray-100 text-center">
             <button 
               onClick={() => {
                 navigate(category.url);
                 onClose();
               }}
-              className="bg-black text-white px-8 py-3 rounded-md hover:bg-gray-800 transition-colors duration-200 font-medium font-hm-sans"
+              className="bg-black text-white px-6 py-2 rounded-md hover:bg-gray-800 transition-colors duration-200 font-medium font-hm-sans text-sm"
             >
               Voir Toute la Collection {category.title}
             </button>
