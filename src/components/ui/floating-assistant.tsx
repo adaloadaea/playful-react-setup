@@ -116,12 +116,85 @@ export const FloatingAssistant: React.FC<FloatingAssistantProps> = ({
     return () => clearInterval(interval);
   }, [checkAgentStatus]);
   
+  // Start polling for new messages
+  const startMessagePolling = useCallback(() => {
+    if (isPollingMessages) return;
+    
+    setIsPollingMessages(true);
+    console.log('Starting message polling for session:', sessionId);
+    
+    messagePollingRef.current = setInterval(async () => {
+      try {
+        if (!sessionId) return;
+        
+        const response = await fetch(`https://draminesaid.com/lucci/api/chat_messages.php?session_id=${sessionId}`, {
+          method: 'GET',
+          headers: { 'Cache-Control': 'no-cache' }
+        });
+        const data = await response.json();
+        
+        if (data.success && data.messages?.length > 0) {
+          const agentMessages = data.messages.filter((msg: any) => msg.sender_type === 'agent');
+          
+          if (agentMessages.length > 0) {
+            setMessages(prev => {
+              const newMessages = agentMessages.filter((msg: any) => 
+                !prev.some(existingMsg => existingMsg.text === msg.message_content)
+              );
+              
+              if (newMessages.length === 0) return prev;
+              
+              console.log('New messages received:', newMessages.length);
+              
+              // Always play notification sound for new messages
+              playNotificationSound();
+              
+              // Increment unread count if chat is closed
+              if (!isOpen) {
+                setUnreadCount(prevCount => {
+                  const newCount = prevCount + newMessages.length;
+                  console.log('Unread count updated:', newCount);
+                  return newCount;
+                });
+              }
+              
+              return [...prev, ...newMessages.map((msg: any) => ({
+                text: msg.message_content,
+                isUser: false,
+                imageUrl: msg.image_url ? `https://draminesaid.com/lucci/${msg.image_url}` : undefined,
+                imageName: msg.image_name
+              }))];
+            });
+          }
+        }
+      } catch (error) {
+        console.error('Error polling messages:', error);
+      }
+    }, 2000); // Check every 2 seconds for faster response
+  }, [sessionId, isPollingMessages, playNotificationSound, isOpen]);
+
+  const stopMessagePolling = useCallback(() => {
+    if (messagePollingRef.current) {
+      clearInterval(messagePollingRef.current);
+      messagePollingRef.current = null;
+    }
+    setIsPollingMessages(false);
+  }, []);
+   
   // Clear unread count when chat is opened
   useEffect(() => {
     if (isOpen && unreadCount > 0) {
       setUnreadCount(0);
     }
   }, [isOpen, unreadCount]);
+
+  // Start polling when session is created
+  useEffect(() => {
+    if (sessionId && userInfoCollected && !isPollingMessages) {
+      console.log('Session created, starting polling immediately:', sessionId);
+      startMessagePolling();
+    }
+  }, [sessionId, userInfoCollected, isPollingMessages, startMessagePolling]);
 
   // Store initial message before contact form
   const storeInitialMessage = async (messageContent: string, messageType: string = 'text') => {
@@ -139,58 +212,6 @@ export const FloatingAssistant: React.FC<FloatingAssistantProps> = ({
       console.error('Error storing initial message:', error);
     }
   };
-
-  // Start polling for new messages
-  const startMessagePolling = useCallback(() => {
-    if (isPollingMessages || !sessionId) return;
-    
-    setIsPollingMessages(true);
-    messagePollingRef.current = setInterval(async () => {
-      try {
-        const response = await fetch(`https://draminesaid.com/lucci/api/chat_messages.php?session_id=${sessionId}`);
-        const data = await response.json();
-        
-        if (data.success && data.messages?.length > 0) {
-          const agentMessages = data.messages.filter((msg: any) => msg.sender_type === 'agent');
-          
-          if (agentMessages.length > 0) {
-            setMessages(prev => {
-              const newMessages = agentMessages.filter((msg: any) => 
-                !prev.some(existingMsg => existingMsg.text === msg.message_content)
-              );
-              
-              if (newMessages.length === 0) return prev;
-              
-              // Play notification sound for new messages
-              playNotificationSound();
-              
-              // Increment unread count if chat is closed
-              if (!isOpen) {
-                setUnreadCount(prevCount => prevCount + newMessages.length);
-              }
-              
-              return [...prev, ...newMessages.map((msg: any) => ({
-                text: msg.message_content,
-                isUser: false,
-                imageUrl: msg.image_url ? `https://draminesaid.com/lucci/${msg.image_url}` : undefined,
-                imageName: msg.image_name
-              }))];
-            });
-          }
-        }
-      } catch (error) {
-        console.error('Error polling messages:', error);
-      }
-    }, 3000); // Check every 3 seconds
-  }, [sessionId, isPollingMessages, playNotificationSound, isOpen]);
-
-  const stopMessagePolling = useCallback(() => {
-    if (messagePollingRef.current) {
-      clearInterval(messagePollingRef.current);
-      messagePollingRef.current = null;
-    }
-    setIsPollingMessages(false);
-  }, []);
 
   const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     setMessage(e.target.value);
