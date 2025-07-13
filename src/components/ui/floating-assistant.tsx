@@ -37,6 +37,7 @@ export const FloatingAssistant: React.FC<FloatingAssistantProps> = ({
   const [isPollingMessages, setIsPollingMessages] = useState(false);
   const [tempSessionId, setTempSessionId] = useState<string>('');
   const [hasInitialGreeting, setHasInitialGreeting] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
   const isMobile = useIsMobile();
   const inputRef = useRef<HTMLInputElement>(null);
   const messagePollingRef = useRef<NodeJS.Timeout | null>(null);
@@ -115,16 +116,12 @@ export const FloatingAssistant: React.FC<FloatingAssistantProps> = ({
     return () => clearInterval(interval);
   }, [checkAgentStatus]);
   
-  // Show initial greeting when chat is opened
+  // Clear unread count when chat is opened
   useEffect(() => {
-    if (isOpen && !hasInitialGreeting) {
-      setMessages([{
-        text: "Bonjour ! Je suis votre assistant de luxe. Si vous avez besoin d'aide, n'hésitez pas à nous contacter.",
-        isUser: false
-      }]);
-      setHasInitialGreeting(true);
+    if (isOpen && unreadCount > 0) {
+      setUnreadCount(0);
     }
-  }, [isOpen, hasInitialGreeting]);
+  }, [isOpen, unreadCount]);
 
   // Store initial message before contact form
   const storeInitialMessage = async (messageContent: string, messageType: string = 'text') => {
@@ -167,6 +164,11 @@ export const FloatingAssistant: React.FC<FloatingAssistantProps> = ({
               // Play notification sound for new messages
               playNotificationSound();
               
+              // Increment unread count if chat is closed
+              if (!isOpen) {
+                setUnreadCount(prevCount => prevCount + newMessages.length);
+              }
+              
               return [...prev, ...newMessages.map((msg: any) => ({
                 text: msg.message_content,
                 isUser: false,
@@ -180,7 +182,7 @@ export const FloatingAssistant: React.FC<FloatingAssistantProps> = ({
         console.error('Error polling messages:', error);
       }
     }, 3000); // Check every 3 seconds
-  }, [sessionId, isPollingMessages, playNotificationSound]);
+  }, [sessionId, isPollingMessages, playNotificationSound, isOpen]);
 
   const stopMessagePolling = useCallback(() => {
     if (messagePollingRef.current) {
@@ -443,10 +445,17 @@ export const FloatingAssistant: React.FC<FloatingAssistantProps> = ({
             >
               <div className="relative">
                 <User className="w-6 h-6" />
+                {/* Online status indicator - top right */}
                 <div className={cn(
-                  "absolute -top-1 -right-1 w-3 h-3 rounded-full border-2 border-white",
+                  "absolute -top-2 -right-2 w-3 h-3 rounded-full border-2 border-white",
                   agentsOnline ? "bg-green-400 animate-pulse" : "bg-red-400"
                 )}></div>
+                {/* Unread message badge - top left */}
+                {unreadCount > 0 && (
+                  <div className="absolute -top-2 -left-2 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center font-semibold border-2 border-white animate-pulse">
+                    {unreadCount > 9 ? '9+' : unreadCount}
+                  </div>
+                )}
               </div>
             </Button>
           )}
@@ -467,10 +476,17 @@ export const FloatingAssistant: React.FC<FloatingAssistantProps> = ({
             >
               <div className="relative">
                 <User className="w-5 h-5" />
+                {/* Online status indicator - top right */}
                 <div className={cn(
                   "absolute -top-1 -right-1 w-2 h-2 rounded-full border border-white",
                   agentsOnline ? "bg-green-400 animate-pulse" : "bg-red-400"
                 )}></div>
+                {/* Unread message badge - top left */}
+                {unreadCount > 0 && (
+                  <div className="absolute -top-1 -left-1 w-4 h-4 bg-red-500 text-white text-xs rounded-full flex items-center justify-center font-semibold border border-white animate-pulse">
+                    {unreadCount > 9 ? '9+' : unreadCount}
+                  </div>
+                )}
               </div>
             </Button>
           )}
