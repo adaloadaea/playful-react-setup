@@ -68,16 +68,28 @@ export const FloatingAssistant: React.FC<FloatingAssistantProps> = ({
   const checkAgentStatus = useCallback(async () => {
     try {
       const response = await fetch('https://draminesaid.com/lucci/api/agent_status.php', {
-        headers: { 'Cache-Control': 'no-cache' }
+        method: 'GET',
+        headers: { 
+          'Cache-Control': 'no-cache',
+          'Content-Type': 'application/json'
+        },
+        mode: 'cors'
       });
       
       if (response.ok) {
         const data = await response.json();
+        console.log('Agent status response:', data); // Debug log
         if (data.success && data.status) {
-          setAgentsOnline(data.status.is_online === '1' || data.status.is_online === 1);
+          const isOnline = data.status.is_online === '1' || data.status.is_online === 1 || data.status.is_online === true;
+          setAgentsOnline(isOnline);
+          console.log('Agent online status:', isOnline); // Debug log
         }
+      } else {
+        console.error('Agent status API response not ok:', response.status, response.statusText);
+        setAgentsOnline(false);
       }
     } catch (error) {
+      console.error('Error checking agent status:', error);
       setAgentsOnline(false);
     }
   }, []);
@@ -305,7 +317,7 @@ export const FloatingAssistant: React.FC<FloatingAssistantProps> = ({
           </div>
           <div>
             <span className="text-white font-semibold block">Assistant Luxe</span>
-            <span className="text-white/80 text-xs">En ligne</span>
+            <span className="text-white/80 text-xs">{agentsOnline ? 'En ligne' : 'Hors ligne'}</span>
           </div>
         </div>
         <Button variant="ghost" size="sm" onClick={() => setIsOpen(false)} className="text-white hover:bg-white/20 h-8 w-8 p-0 relative z-10">
