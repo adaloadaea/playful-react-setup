@@ -41,16 +41,41 @@ export const FloatingAssistant: React.FC<FloatingAssistantProps> = ({
   const inputRef = useRef<HTMLInputElement>(null);
   const messagePollingRef = useRef<NodeJS.Timeout | null>(null);
   
+  // Notification sound using Web Audio API
+  const playNotificationSound = useCallback(() => {
+    try {
+      const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+      const oscillator = audioContext.createOscillator();
+      const gainNode = audioContext.createGain();
+      
+      oscillator.connect(gainNode);
+      gainNode.connect(audioContext.destination);
+      
+      oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+      oscillator.frequency.setValueAtTime(600, audioContext.currentTime + 0.1);
+      
+      gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+      
+      oscillator.start(audioContext.currentTime);
+      oscillator.stop(audioContext.currentTime + 0.3);
+    } catch (error) {
+      console.log('Could not play notification sound:', error);
+    }
+  }, []);
+
   // Check agent status
   const checkAgentStatus = useCallback(async () => {
     try {
-      const response = await fetch('https://draminesaid.com/lucci/api/agent_status.php?action=count', {
+      const response = await fetch('https://draminesaid.com/lucci/api/agent_status.php', {
         headers: { 'Cache-Control': 'no-cache' }
       });
       
       if (response.ok) {
         const data = await response.json();
-        setAgentsOnline(data.success && data.status === 'online');
+        if (data.success && data.status) {
+          setAgentsOnline(data.status.is_online === '1' || data.status.is_online === 1);
+        }
       }
     } catch (error) {
       setAgentsOnline(false);
@@ -127,6 +152,9 @@ export const FloatingAssistant: React.FC<FloatingAssistantProps> = ({
               
               if (newMessages.length === 0) return prev;
               
+              // Play notification sound for new messages
+              playNotificationSound();
+              
               return [...prev, ...newMessages.map((msg: any) => ({
                 text: msg.message_content,
                 isUser: false,
@@ -140,7 +168,7 @@ export const FloatingAssistant: React.FC<FloatingAssistantProps> = ({
         console.error('Error polling messages:', error);
       }
     }, 3000); // Check every 3 seconds
-  }, [sessionId, isPollingMessages]);
+  }, [sessionId, isPollingMessages, playNotificationSound]);
 
   const stopMessagePolling = useCallback(() => {
     if (messagePollingRef.current) {
